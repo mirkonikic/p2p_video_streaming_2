@@ -11,7 +11,7 @@ namespace tracker
     {
         //Client Array
         public Client[] client_array;
-        int max_clients = 256;
+        public static int max_clients = 256;
 
         public bool isRunning = false;
         public bool isVisual = false;
@@ -26,6 +26,10 @@ namespace tracker
             nullOutClientArray();
             if (!path.EndsWith("\\")) { path += "\\"; }
             this.isRunning = true;
+        }
+
+        public static int MaxClients {
+            get { return max_clients; }   
         }
 
         public void nullOutClientArray() 
