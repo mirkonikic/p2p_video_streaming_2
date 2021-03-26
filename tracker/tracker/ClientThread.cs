@@ -175,7 +175,14 @@ namespace tracker
         //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
         //parseList(line);              //Iscita iz streamers.dat fajla u niz i posalje ih tako da klijent moze da split(":") i da dobije razdvojene strimere
         //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
+
         //parseStrm(line);              //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
+        public int parseStrm() 
+        {
+
+            return 0;
+        }
+
         //parseWtch(line);              //Zeli da gleda nekoga, salje mu info o tom streameru, stavlja mu w u user.dat, dodaje ga u <>.dat, watchers.dat i stavlja client.role=w
         //parseStop(line);              //Zaustavlja streaming/watching (vraca se u meni), ako je role=w onda ga bris iz gore navedenih, ako je role=s onda ga brise iz prethodno navedenih
 
