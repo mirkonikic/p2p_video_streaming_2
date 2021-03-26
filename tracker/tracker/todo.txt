@@ -1,0 +1,102 @@
+﻿-Napravi assembly u kom se nalaze error codes
+-Napravi modify metodu koja olaksava izmenu databaze
+-napravi komandu u konzoli SET DB USER.DAT <lokacija user.dat fajla> i on tu od sad uvek proverava za user.dat
+-napravi komandu u konzoli SET DB ADD USER.DAT <doda jos jednu lokaciju na kojoj proverava za user.dat fajl> //sa ovim npr proveri na obe lokacije i na gore spomenutoj i na novo dodatoj
+
+[CLIENT_THREAD:]
+	-
+	-
+	-
+	-
+
+	METODE:
+		+parseRequest()
+		+createResponse()
+		+Start()
+		-<COMMAND>Parse()
+			-INFO							//Information about tracker/streamer/watcher
+			-LIST							//Send list of streamers
+			-LIWA							//Send list of watchers
+			-WTCH <streamer_name>			//Choose to be watcher and pass which watcher you want to watch
+			-STRM <title>					//Choose to stream and pass title of your stream
+			-STOP							//STOP streaming/watching_streamer
+			+USER <username> <passwd>		//Login/Register
+			+EXIT							//Turn off/Disconnect
+		-checkFilesystem()					//proverava ceo Data filesystem da li postoji
+		-existDb(String db)					//proverava da li postoji jedna databaza
+		-rewriteDb(String db, String data)	//Reqrites whole database() - dobro za npr bazu koja ima jednu liniju samo i promenljiva je lakse je prikupiti podatke opet i upisati nego menjati sve
+		-modifyDb(int position_q, String query, int powsition_v, String value, String db)
+		-appendDb(String db, string line)	//Dopisi nov red npr nov ulogovan streamer
+		-countFromDb(Integer position, String db)	//
+		-countFromDbCondition(int position, String db, String dataValue)	//
+		+returnFromDb(Integer position, String dataValue, String db) //
+		-ARRAY returnWatchers(String streamer_username)
+
+
+[TRACKER:]
+	-Dobija klijentov socket od listenera i kreira Thread za njega
+	-Cuva array klijenata
+	-Ima konzolu u koju mozes da upises komande
+	-Uloguje i registruje klijenta
+
+	METODE:
+		+createClient()						//Kreira klijent objekat/thread i poziva ga
+		+returnFirstFreePlaceInArray()		//Vrati prvo slobodno mesto u arrayu
+		+nullOutClientArray()				//Ispuni null-characterima arraay sa klijentima
+	
+		+Start()							//While loop koji prima komande
+		-<COMMAND>Parse()					//EXIT samo za sada, posle dodaj INFO o streamerima/watcherima/clients
+			+END							//END gasi server i sve konekcije
+			+ECHO							//isto kao u linuxu
+				-dodaj easter eggs			//environment variables
+			+INFO							//informacije o trackeru/streamerima/watchgerima
+			+LIST							//listaj strimere za nekog gledalaca, ima query
+			+VISUAL							//on/off prikaz svega sto se desava na trackeru sada
+			+PATH							//Set and modify current location of storing data
+			+CD								//Move around the filesystem
+			-CAT							//listaj baze/text fajlove iz static ili data foldera
+			-KICK							//otkaci konekciju sa nekim
+			-BAN							//banuj ip adresu nekoga
+
+		+tprint()							//Ispisi na konzoli
+		+terror()							//Ispisi error na konzoli
+		+tmenu()							//na pocetku napravi ascii ikonicu
+		+tcmd()								//ucita i pripremi unos sa konzole
+
+	PROTOCOL:
+		-srv:
+			//SMISLI ERROR CODE ZA SVAKU OD OVIH OPCIJA
+		-cli:
+			+USER <username> <pass>			//login ili register
+			+EXIT							//logout
+			?INFO							//How many clients/watchers/streamers are connected, ip_address/name of tracker
+				-tracker					// ^
+				-streamer					//Information about that streamer
+				-watcher					//Information about that watcher
+			-LIST							//Send list of streamers, names/title of stream
+			-LIWA							//Send list of watchers that are watching
+			-WTCH <username>				//Choose which streamer you want to watch, get ip_address of that streamer
+			-STRM <ip_address:port_na_kome_strimujes> <title_strima>		//Choose to stream, send title and THUMBNAIL<not_yet>
+			-STOP							//Stop streaming/watching
+
+	DATA:
+		user.dat//username		password			ip_address					[w/s/x]
+		strm.dat//username		ip_address			number_of_watchers			title
+		wtch.dat//username		who_am_i_wacthing
+		<><>.dat//username_w	ip_address_w
+		-user.dat
+			-username 						//
+			-password						//
+			-logged_in						//1/0
+			-ip_address
+		-streamers.dat
+			-username
+			-title
+			-ip_address
+			-number_of_watchers
+		-watchers.dat
+			-username
+			-who_am_i_watching
+		-<streamer_username>.dat
+			-username_of_watcher
+			-ip_address
