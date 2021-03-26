@@ -37,7 +37,6 @@ namespace tracker
             while (isRunning == true)
             {
                 input = br.ReadString();
-                //vprint(input, client.name);
                 createResponse(parseRequest(input));
             }
         }
@@ -64,7 +63,7 @@ namespace tracker
                         //return_code = parseLiwa(line);
                         break;
                     case "STRM":
-                        //return_code = parseStrm(line);
+                        return_code = parseStrm(line);
                         break;
                     case "WTCH":
                         //return_code = parseWtch(line);
@@ -73,6 +72,7 @@ namespace tracker
                         //return_code = parseStop(line);
                         break;
                     default:
+                        vprint("Default se izvrsio", client.name);
                         return 500;
                 }
             }
@@ -177,8 +177,39 @@ namespace tracker
         //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
 
         //parseStrm(line);              //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
-        public int parseStrm() 
+        public int parseStrm(string line) 
         {
+            //PROVERI KOMANDU        STRM <title>
+            vprint("Stigao sam", client.name);
+            string[] parsed_line = line.Split(null);
+            vprint(line, client.name);
+            if (parsed_line.Length < 2) { return 500; }
+
+            //PROVERI FILESYSTEM i DATABAZU
+            if (!checkFilesystem()) { return 500; }
+            if (!checkDb("streamers.dat")) { return 500; }
+
+            //UPISI U USER>DAT S
+            modifyDb(0, client.name, 3, "s", "user.dat");
+            vprint("Trebalo bi da sam modifikovao da budem streamer", client.name);
+
+            //UPISI U STRMRS.DAT USERA
+            //username		title
+            //prikupi title iz komande
+            string title = "";
+            for (int i = 1; i<parsed_line.Length; i++) 
+            {
+                title += parsed_line[i] + "_";
+            }
+            if (title.EndsWith("_")) { title = title.Remove(title.Length - 1, 1); }
+            vprint(title, client.name);
+
+            vprint("Upisujem: "+client.name+" "+title, client.name);
+            appendToDb(client.name + " " + title, "streamers.dat");
+
+            //KREIRAJ <>.DAT
+            emptyOutFile(client.name + ".dat");
+            vprint("Kreirani fajl: "+client.name+".dat postoji? "+File.Exists(returnDbPath(client.name+".dat")), client.name);
 
             return 0;
         }
@@ -214,34 +245,34 @@ namespace tracker
             return false;
         }
 
-        public bool checkDb(string db) { return File.Exists(client.tracker.path + "Data\\" + db); }
+        public bool checkDb(string db) { return File.Exists(returnDbPath(db)); }
 
         public bool appendToDb(string data_line, string db) 
         {
             if (!checkDb(db)) { return false; }
-            StreamWriter sw = new StreamWriter(client.tracker.path + "Data\\" + db, true);
+            StreamWriter sw = new StreamWriter(returnDbPath(db), true);
             sw.WriteLine(data_line);
             sw.Close();
             return true;
         }
 
-        public void emptyOutFile(string db) { File.Delete(client.tracker.path + "Data\\" + db); File.Create(client.tracker.path + "Data\\" + db); return; }
+        public void emptyOutFile(string db) { File.Delete(returnDbPath(db)); File.Create(returnDbPath(db)).Close(); return; }
 
         //sa kolonom position_q uporedjuje string query i ako su isti menja vrednost na poziciji position_v u string value u bazi db
         public void modifyDb(int position_q, String query, int position_v, String value, String db)
         {
-            StreamReader sr = new StreamReader(client.tracker.path + "Data\\" + db);
+            StreamReader sr = new StreamReader(returnDbPath(db));
             
             string[] lines = null;
 
-            lines = File.ReadAllLines(client.tracker.path + "Data\\" + db);
+            lines = File.ReadAllLines(returnDbPath(db));
             sr.Close();
 
-            StreamWriter sw = new StreamWriter(client.tracker.path + "Data\\" + db, false);
+            StreamWriter sw = new StreamWriter(returnDbPath(db), false);
             
             sw.Close();
 
-            StreamWriter sa = new StreamWriter(client.tracker.path + "Data\\" + db, true);
+            StreamWriter sa = new StreamWriter(returnDbPath(db), true);
 
             string tmp = "";
             foreach (string line in lines)
@@ -255,18 +286,41 @@ namespace tracker
                     tmp = "";
                     for (int i = 0; i<parsed_line.Length; i++) { tmp += parsed_line[i] + " "; }
                 }
+                vprint(tmp, client.name);
                 sa.WriteLine(tmp);
             }
 
             sa.Close();
         }
 
+        public bool deleteFromDb(int position, string query, string db) 
+        {
+            if (!checkDb(db)) { return false; }
+            
+            string[] lines = File.ReadAllLines(returnDbPath(db));
+            emptyOutFile(db);
+
+            StreamWriter sw = new StreamWriter(returnDbPath(db), true);
+            foreach (string line in lines) 
+            {
+                string[] parsed_line = line.Split(null);
+                if (parsed_line[position].Equals(query)) { vprint("Nasao sam " + query, client.name); }
+                else { sw.WriteLine(line); }
+            }
+            sw.Close();
+            return true;
+        }
+
+        public bool deleteDb(string db) { File.Delete(returnDbPath(db)); return !File.Exists(returnDbPath(db)); }
+
+        public string returnDbPath(string db) { return client.tracker.path + "Data\\" + db; }
+
         public string returnFromDatabase(int position, string query, string db) 
         {
-            StreamReader sr = new StreamReader(client.tracker.path + "Data\\" + db);
+            StreamReader sr = new StreamReader(returnDbPath(db));
             string[] lines = null;
 
-            lines = File.ReadAllLines(client.tracker.path + "Data\\"+db);
+            lines = File.ReadAllLines(returnDbPath(db));
             foreach (string line in lines) 
             {
                 if (line.Split(null)[position].Equals(query)) 

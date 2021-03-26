@@ -45,6 +45,20 @@ namespace tracker
             for (int i = client_array.Length - 1; i >= 0; i--) { vprint("[" + i + "]" + client_array[i] + " | " + client_array[i]?.name + " | " + client_array[i]?.ip_address); }
         }
 
+        public void printOutDb(string db)
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines(path + "Data\\" + db);
+                int i = 0;
+                foreach (string line in lines) { vprint("[" + i++ + "]" + line); }
+            }
+            catch (Exception e) 
+            {
+                vprint("Fajl "+db+" ne postoji");
+            }
+        }
+
         public int returnFirstFreePlaceInArray() 
         {
             for (int i = 0; i<max_clients; i++) 
@@ -297,6 +311,26 @@ namespace tracker
             }
         }
 
+        public void tparseCat(string line) 
+        {
+            string[] parsed_line = line.Split(null);
+            if (parsed_line.Length != 2) { return; }
+
+            switch (parsed_line[1])
+            {
+                case "user.dat":
+                    printOutDb("user.dat");
+                    break;
+                case "streamers.dat":
+                    printOutDb("streamers.dat");
+                    break;
+                default:
+                    //Proveri dal postoji
+                    printOutDb(parsed_line[1]);
+                    break;
+            }
+        }
+
         public void closeClients() 
         {
             for (int i = 0; i<max_clients; i++) 
@@ -363,6 +397,12 @@ namespace tracker
                         break;
                     case "cd":
                         tparseCd(input);
+                        break;
+                    case "CAT":
+                        tparseCat(input);
+                        break;
+                    case "cat":
+                        tparseCat(input);
                         break;
                     case "HELP":
                         tprint("VISUAL \nCD \nLIST \nPATH \nECHO \nINFO \nHELP \nEND");
