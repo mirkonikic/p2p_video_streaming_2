@@ -118,7 +118,7 @@ namespace tracker
 
         public bool registerUser(string line) 
         {
-            string pattern = @"user[0-256]";
+            string pattern = $"user[0-{Tracker.MaxClients}]";
             Regex rgx = new Regex(pattern);
 
             string[] parsed_line = line.Split(null);
