@@ -81,7 +81,7 @@
 
 	DATA:
 		user.dat//username		password			ip_address					[w/s/x]
-		strm.dat//username		ip_address			number_of_watchers			title
+		strm.dat//username		title
 		wtch.dat//username		who_am_i_wacthing
 		<><>.dat//username_w	ip_address_w
 		-user.dat
