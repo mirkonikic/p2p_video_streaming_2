@@ -36,8 +36,18 @@ namespace tracker
 
             while (isRunning == true)
             {
-                input = br.ReadString();
-                createResponse(parseRequest(input));
+                try
+                {
+                    input = br.ReadString();
+                    //vprint(input, client.name);
+                    createResponse(parseRequest(input));
+                }
+                catch (IOException)
+                {
+
+                    vprint("je iznenada prekinuo vezu!", client.name);
+                    return;
+                }
             }
         }
 
@@ -57,7 +67,7 @@ namespace tracker
                         return_code = parseExit(line);
                         break;
                     case "LIST":
-                        //return_code = parseList(line);
+                        return_code = parseList(line);
                         break;
                     case "LIWA":
                         //return_code = parseLiwa(line);
@@ -174,6 +184,35 @@ namespace tracker
 
         //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
         //parseList(line);              //Iscita iz streamers.dat fajla u niz i posalje ih tako da klijent moze da split(":") i da dobije razdvojene strimere
+        public int parseList(string line)
+        {
+            string[] parsed_line = line.Split(null);
+            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 500; }   //VRATI LOSE UNETA KOMANDA
+
+            if (!checkFilesystem()) { return 500; }
+            if (!checkDb("streamers.dat")) { return 500; }
+
+            string[] streamers = File.ReadAllLines(client.tracker.path + "Data\\streamers.dat");
+
+            if (streamers == null) { return 500; }
+            else
+            {
+                string streamers_list = "";
+
+                for(int i = 0; i < streamers.Length; i++)
+                {
+                    streamers_list += streamers[i];
+                    if(i + 1 != streamers.Length)
+                    {
+                        streamers_list += ':';
+                    }
+                }
+
+                bw.Write(streamers_list);
+            }
+
+            return 200;
+        }
         //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
 
         //parseStrm(line);              //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
