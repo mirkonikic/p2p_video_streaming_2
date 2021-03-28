@@ -29,6 +29,13 @@ namespace tracker
 
         public void Disconnect() 
         {
+            //PREBACI IZ S/W u X
+            client_thread.modifyDb(0, name, 3, "x", "user.dat");
+            client_thread.deleteFromDb(0, name, "streamers.dat");
+
+            //OBRISI <>.DAT
+            client_thread.deleteDb(name+".dat");
+
             //CLOSE ALL STREAMS
             client_thread.bw.Flush();
             client_thread.br.Close();
