@@ -76,7 +76,7 @@ namespace tracker
                         return_code = parseStrm(line);
                         break;
                     case "WTCH":
-                        //return_code = parseWtch(line);
+                        return_code = parseWtch(line);
                         break;
                     case "STOP":
                         //return_code = parseStop(line);
@@ -106,24 +106,27 @@ namespace tracker
 
         public void createResponse(int request_code)
         {
+            string response = null;
             //switch: 200, 100, 300 => return(OK, ERROR, GOOD)
             switch (request_code)
             {
                 case 200:
-                    bw.Write("OK");
+                    response = "OK";
                     break;
                 case 201:
-                    bw.Write("OK " + "stream1;stream2;stream3;stream4");
+                    response = "OK " + "stream1;stream2;stream3;stream4";
                     break;
                 case 300:
-                    bw.Write("ERROR");
+                    response = "ERROR";
                     break;
                 case 500:
-                    bw.Write("ERROR");
+                    response = "ERROR";
                     break;
                 default:
+                    response = "ERROR";
                     break;
             }
+            bw.Write(response);
         }
 
         public bool registerUser(string line) 
@@ -136,7 +139,7 @@ namespace tracker
             if (rgx.Matches(parsed_line[1]).Count>0) { vprint(parsed_line[1]+" je metchovan sa regexom \"user[0-256]\" i odbijen je za registraciju"); return false; }
             vprint(parsed_line[1] + " nije metchovan sa regexom \"user[0-256]\" i prosledjen je na registraciju");
 
-            string db_line = parsed_line[1] + " " + parsed_line[2] + " " + client.socket.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + "x";
+            string db_line = parsed_line[1] + " " + parsed_line[2] + " " + returnClientIpAddress() + " " + "x";
             vprint(db_line);
             appendToDb(db_line, "user.dat");
             return true;
@@ -182,8 +185,7 @@ namespace tracker
             return -1;
         }
 
-        //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
-        //parseList(line);              //Iscita iz streamers.dat fajla u niz i posalje ih tako da klijent moze da split(":") i da dobije razdvojene strimere
+        //Iscita iz streamers.dat fajla u niz i posalje ih tako da klijent moze da split(":") i da dobije razdvojene strimere
         public int parseList(string line)
         {
             string[] parsed_line = line.Split(null);
@@ -208,14 +210,14 @@ namespace tracker
                     }
                 }
 
+                //SMISLITI KAKO DA SE RESI OVO
                 bw.Write(streamers_list);
             }
 
             return 200;
         }
-        //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
 
-        //parseStrm(line);              //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
+        //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
         public int parseStrm(string line) 
         {
             //PROVERI KOMANDU        STRM <title>
@@ -250,10 +252,50 @@ namespace tracker
             emptyOutFile(client.name + ".dat");
             vprint("Kreirani fajl: "+client.name+".dat postoji? "+File.Exists(returnDbPath(client.name+".dat")), client.name);
 
-            return 0;
+            client.role = "s";
+
+            return 200;
         }
 
-        //parseWtch(line);              //Zeli da gleda nekoga, salje mu info o tom streameru, stavlja mu w u user.dat, dodaje ga u <>.dat, watchers.dat i stavlja client.role=w
+        //Zeli da gleda nekoga, salje mu info o tom streameru, stavlja mu w u user.dat, dodaje ga u <>.dat, watchers.dat i stavlja client.role=w
+        public int parseWtch(string line)
+        {
+            //PROVERI KOMANDU        WTCH <username>
+            vprint("Stigao sam", client.name);
+            string[] parsed_line = line.Split(null);
+            vprint(line, client.name);
+            if (parsed_line.Length < 2) { return 500; }
+
+            //PROVERI FILESYSTEM i DATABAZU
+            if (!checkFilesystem()) { return 500; }
+            if (!checkDb("streamers.dat")) { return 500; }
+
+            //PROVERI DAL ZELJENI USER POSTOJI
+            string streamer = returnFromDatabase(0, parsed_line[1], "streamers.dat");
+            if (streamer == null) { vprint("Streamer "+parsed_line[1]+" ne postoji.");  return 500; }
+
+            //UPISI U USER>DAT W
+            modifyDb(0, client.name, 3, "w", "user.dat");
+            vprint("Trebalo bi da sam modifikovao da budem watcher", client.name);
+
+            //PROVERI DAL POSTOJI <username>.DAT
+            if (!checkDb(parsed_line[1] + ".dat")) { vprint("Ne postoji "+parsed_line[1]+".dat");  return 500; }
+
+            //UPISI U <username>.DAT USERA
+            //username_w	ip_address_w
+            vprint("Upisujem " + client.name + " " + returnClientIpAddress(), client.name);
+            appendToDb(client.name + " " + returnClientIpAddress(), parsed_line[1]+".dat");
+
+            client.role = "w";
+
+            //RESI OVO -> KAKO POSLATI RETURN STRIMER INFO
+            //return streamer.Split(null)[1];
+            return 200;
+        }
+
+
+        //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
+        //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
         //parseStop(line);              //Zaustavlja streaming/watching (vraca se u meni), ako je role=w onda ga bris iz gore navedenih, ako je role=s onda ga brise iz prethodno navedenih
 
         public bool checkFilesystem()
@@ -371,6 +413,10 @@ namespace tracker
             sr.Close();
             return null;
         }
+
+        public string returnClientIpAddress() { return client.socket.Client.RemoteEndPoint.ToString().Split(":")[0]; }
+
+        public string returnClientPort() { return client.socket.Client.RemoteEndPoint.ToString().Split(":")[1]; }
 
         public void vprint(string line, string host=null)
         {

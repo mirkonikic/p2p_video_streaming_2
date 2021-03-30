@@ -30,6 +30,7 @@ namespace tracker
         public void Disconnect() 
         {
             //PREBACI IZ S/W u X
+            role = "x";
             client_thread.modifyDb(0, name, 3, "x", "user.dat");
             client_thread.deleteFromDb(0, name, "streamers.dat");
 
