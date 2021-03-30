@@ -273,7 +273,7 @@ namespace tracker
             //PROVERI DAL ZELJENI USER POSTOJI
             string streamer = returnFromDatabase(0, parsed_line[1], "streamers.dat");
             if (streamer == null) { vprint("Streamer "+parsed_line[1]+" ne postoji.");  return 500; }
-
+            
             //UPISI U USER>DAT W
             modifyDb(0, client.name, 3, "w", "user.dat");
             vprint("Trebalo bi da sam modifikovao da budem watcher", client.name);
@@ -286,6 +286,7 @@ namespace tracker
             vprint("Upisujem " + client.name + " " + returnClientIpAddress(), client.name);
             appendToDb(client.name + " " + returnClientIpAddress(), parsed_line[1]+".dat");
 
+            client.streamer_kog_gleda = parsed_line[1];
             client.role = "w";
 
             //RESI OVO -> KAKO POSLATI RETURN STRIMER INFO
@@ -350,8 +351,37 @@ namespace tracker
             }
         }
 
-        //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
-        //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
+        //Iscita watchere za specificnog strimera, i to cita iz <>.dat
+        public int parseLiwa(string line) 
+        {
+            string[] parsed_line = line.Split(null);
+            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 500; }   //VRATI LOSE UNETA KOMANDA
+
+            if (!checkFilesystem()) { return 500; }
+            if (!checkDb(client.name + ".dat")) { return 500; }
+
+            string[] watchers = File.ReadAllLines(client.tracker.path + "Data\\"+client.name+".dat");
+
+            if (watchers == null) { return 500; }
+            else
+            {
+                string watchers_list = "";
+
+                for (int i = 0; i < watchers.Length; i++)
+                {
+                    watchers_list += watchers[i];
+                    if (i + 1 != watchers.Length)
+                    {
+                        watchers_list += ':';
+                    }
+                }
+
+                //SMISLITI KAKO DA SE RESI OVO ISTO
+                bw.Write(watchers_list);
+            }
+
+            return 200;
+        }
 
         public bool checkFilesystem()
         {
