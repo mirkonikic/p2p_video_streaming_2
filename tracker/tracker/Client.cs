@@ -10,6 +10,7 @@ namespace tracker
         public string name = null;
         public string password = null;
         public string role = "x";
+        public string streamer_kog_gleda = null;
 
         //CONTROL
         public int id = -1;

@@ -293,10 +293,65 @@ namespace tracker
             return 200;
         }
 
+        //Zaustavlja streaming/watching (vraca se u meni), ako je role=w onda ga bris iz gore navedenih, ako je role=s onda ga brise iz prethodno navedenih
+        public int parseStop(string line) 
+        {
+            //IF STREAMER BRISI IZ STREAM FAJLOVA, IF WATCHER BRISI IZ WACTEHR FAJLOVA
+
+            //PROVERI KOMANDU        STRM <title>
+            vprint("Stigao sam", client.name);
+            string[] parsed_line = line.Split(null);
+            vprint(line, client.name);
+            if (parsed_line.Length > 1) { return 500; }
+
+            //PROVERI FILESYSTEM i DATABAZU
+            if (!checkFilesystem()) { return 500; }
+            if (!checkDb("user.dat")) { return 500; }
+
+            //UPISI U USER>DAT S
+            modifyDb(0, client.name, 3, "x", "user.dat");
+            vprint("Trebalo bi da sam modifikovao da ne budem s/w", client.name);
+
+            if (client.role.Equals("w"))
+            {
+                //PRONADJI KOG STREAMERA GLEDA
+                //1_IDEJA PRODJI KROZ SVAKOG USERNAME.DAT I NADJI WATCHERA
+                //2_IDEJA CUVAJ U PROMENLJIVU IME KOGA GLEDA
+                //3_IDEJA NAPRAVI WATCHER.DAT I TU SE CUVA KO KOGA GLEDA
+                //4_IDEJA 
+                //Za sada ideja 2 je najlaksa
+                //IZBRISI IZ <>.DAT USERA
+                vprint(client.streamer_kog_gleda + " je ime username.dat");
+                deleteFromDb(0, client.name, client.streamer_kog_gleda + ".dat");
+                client.streamer_kog_gleda = null;
+
+                return 200;
+            }
+            else if (client.role.Equals("s"))
+            {
+                //IZBRISI IZ STRMRS.DAT USERA
+                deleteFromDb(0, client.name, "streamers.dat");
+
+                //OBRISI <>.DAT
+                deleteDb(client.name+".dat");
+                vprint("Kreirani fajl: " + client.name + ".dat postoji? " + File.Exists(returnDbPath(client.name + ".dat")), client.name);
+                
+                //PODESI SVE WATCHERE NA X??
+                //JAVI IM BAR DA JE STREAMER PRESTAO DA STRIMUJE??
+
+                client.role = "x";
+
+                return 200;
+            }
+            else
+            {
+                vprint("Uloga klijenta: " + client.role, client.name);
+                return 500;
+            }
+        }
 
         //parseInfo(line);              //Nisam siguran jos sta bih slao kao info
         //parseLiwa(line);              //Iscita watchere za specificnog strimera, i to cita iz <>.dat
-        //parseStop(line);              //Zaustavlja streaming/watching (vraca se u meni), ako je role=w onda ga bris iz gore navedenih, ako je role=s onda ga brise iz prethodno navedenih
 
         public bool checkFilesystem()
         {
