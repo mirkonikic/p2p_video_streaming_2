@@ -12,6 +12,8 @@ namespace tracker
     {
         Client client = null;
         public bool isRunning = false;
+        //IDEJA za resavanje problema kako poslati LIST-u klijentu 
+        string response200 = null;             //Da mozemo da kontrolisemo sta se prosledi klijentu
 
         string input = "";
         string last_cmd = "";
@@ -80,6 +82,9 @@ namespace tracker
                     case "STOP":
                         //return_code = parseStop(line);
                         break;
+                    case "USER":
+                        return_code = 403;
+                        break;
                     default:
                         vprint("Default se izvrsio", client.name);
                         return 500;
@@ -96,7 +101,7 @@ namespace tracker
                         return_code = parseUser(line);
                         break;
                     default:
-                        return 500;
+                        return 401;
                 }
             }
 
@@ -157,8 +162,8 @@ namespace tracker
             | "401"  ; Unauthorized
             | "402"  ; Wrong password
             | "403"  ; Already logged in
-            | "404"  ; Title too long
-            | "405"  ; User not found
+            | "404"  ; User not found
+            | "405"  ; Title too long
             | "406"  ; Already watcher/Streamer
             | "407"  ; Cant stop
             
@@ -173,20 +178,65 @@ namespace tracker
             //switch: 200, 100, 300 => return(OK, ERROR, GOOD)
             switch (request_code)
             {
-                case 200:
-                    response = "OK";
+                case 100:                   //INFO
+                    response = "100 This is p2p streaming application";
                     break;
-                case 201:
-                    response = "OK " + "stream1;stream2;stream3;stream4";
+                case 101:                   //HELP
+                    response = "101 If not logged in: USER, HELP if logged in: STRM, WTCH, STOP, LIST, LIWA";
+                    break;
+                case 200:
+                    if (response200 == null) { response = "200 Ok"; }
+                    else { response = "200 " + response200; response200 = null; }
+                    break;
+                case 201:                   //Sending LIST
+                    if (response200 == null) { response = "201 Ok"; }   //Ako nema strimera sada
+                    else { response = "201 " + response200; response200 = null; }
+                    break;
+                case 202:                   //Sending LIWA
+                    if (response200 == null) { response = "202 Ok"; }   //Ako nema watchera sada
+                    else { response = "202 " + response200; response200 = null; }
                     break;
                 case 300:
-                    response = "ERROR";
+                    response = "300 Further action must be taken";
+                    break;
+                case 400:
+                    response = "400 Bad Request";
+                    break;
+                case 401:
+                    response = "401 Unauthorized";
+                    break;
+                case 402:
+                    response = "402 Wrong password";
+                    break;
+                case 403:
+                    response = "403 Already logged in";
+                    break;
+                case 404:
+                    response = "404 Not Found";
+                    break;
+                case 405:
+                    response = "405 Title too long";
+                    break;
+                case 406:
+                    response = "406 Already watcher/Streamer";
+                    break;
+                case 407:
+                    response = "407 Cant stop";
+                    break;
+                case 408:
+                    response = "408 No Streamers";
+                    break;
+                case 409:
+                    response = "409 No Watchers";
                     break;
                 case 500:
-                    response = "ERROR";
+                    response = "500 Internal Server Error";
+                    break;
+                case 501:
+                    response = "501 Not Implemented";
                     break;
                 default:
-                    response = "ERROR";
+                    response = "500 Internal Server Error";
                     break;
             }
             bw.Write(response);
@@ -211,11 +261,11 @@ namespace tracker
         public int parseUser(string line)
         {
             //PROVERI DAL JE ULOGOVAN
-            if (client.isLoggedIn == true) { vprint("Korisnik " + client.name + " je vec ulogovan!"); return 500; }
+            if (client.isLoggedIn == true) { vprint("Korisnik " + client.name + " je vec ulogovan!"); return 403; }
 
             //PROVERI DAL IMA 3 argumenta
             string[] parsed_line = line.Split(null);
-            if (parsed_line.Length != 3) { vprint("ERROR: parsed_line nije duzine 3 elementa, "+parsed_line.Length, client.name);  return 500; }   //VRATI LOSE UNETA KOMANDA
+            if (parsed_line.Length != 3) { vprint("ERROR: parsed_line nije duzine 3 elementa, "+parsed_line.Length, client.name);  return 400; }   //VRATI LOSE UNETA KOMANDA
 
             //POZOVI PROVERU DAL POSTOJI FAJL
             if (!checkFilesystem()) { return 500; }
@@ -237,29 +287,29 @@ namespace tracker
                 client.role = "x";
                 return 200;
             }
-            else { return 500; }
+            else { return 402; }
         }
 
         public int parseExit(string line) 
         {
-            bw.Write("OK");
+            //bw.Write("OK");
             client.Disconnect();
             if (client.id >= 0) { client.tracker.client_array[client.id] = null; }
-            return -1;
+            return 200;
         }
 
         //Iscita iz streamers.dat fajla u niz i posalje ih tako da klijent moze da split(":") i da dobije razdvojene strimere
         public int parseList(string line)
         {
             string[] parsed_line = line.Split(null);
-            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 500; }   //VRATI LOSE UNETA KOMANDA
+            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 400; }   //VRATI LOSE UNETA KOMANDA
 
             if (!checkFilesystem()) { return 500; }
             if (!checkDb("streamers.dat")) { return 500; }
 
             string[] streamers = File.ReadAllLines(client.tracker.path + "Data\\streamers.dat");
 
-            if (streamers == null) { return 500; }
+            if (streamers == null) { return 408; }      //No streamers
             else
             {
                 string streamers_list = "";
@@ -274,10 +324,11 @@ namespace tracker
                 }
 
                 //SMISLITI KAKO DA SE RESI OVO
-                bw.Write(streamers_list);
+                //bw.Write(streamers_list);
+                response200 = streamers_list;
             }
 
-            return 200;
+            return 201;
         }
 
         //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
@@ -287,7 +338,10 @@ namespace tracker
             vprint("Stigao sam", client.name);
             string[] parsed_line = line.Split(null);
             vprint(line, client.name);
-            if (parsed_line.Length < 2) { return 500; }
+            if (parsed_line.Length < 2) { return 400; }
+
+            //PROVERI DAL VEC STRIMUJE ILI WATCHUJE
+            if (client.role.Equals("w") || client.role.Equals("s")) { return 406; } //already streaming or watching
 
             //PROVERI FILESYSTEM i DATABAZU
             if (!checkFilesystem()) { return 500; }
@@ -300,6 +354,8 @@ namespace tracker
             //UPISI U STRMRS.DAT USERA
             //username		title
             //prikupi title iz komande
+            if (parsed_line.Length>10) { return 405; }      //Title too long
+
             string title = "";
             for (int i = 1; i<parsed_line.Length; i++) 
             {
@@ -327,7 +383,10 @@ namespace tracker
             vprint("Stigao sam", client.name);
             string[] parsed_line = line.Split(null);
             vprint(line, client.name);
-            if (parsed_line.Length < 2) { return 500; }
+            if (parsed_line.Length < 2) { return 400; }
+
+            //PROVERI DAL VEC STRIMUJE ILI WATCHUJE
+            if (client.role.Equals("w") || client.role.Equals("s")) { return 406; } //already streaming or watching
 
             //PROVERI FILESYSTEM i DATABAZU
             if (!checkFilesystem()) { return 500; }
@@ -335,7 +394,7 @@ namespace tracker
 
             //PROVERI DAL ZELJENI USER POSTOJI
             string streamer = returnFromDatabase(0, parsed_line[1], "streamers.dat");
-            if (streamer == null) { vprint("Streamer "+parsed_line[1]+" ne postoji.");  return 500; }
+            if (streamer == null) { vprint("Streamer "+parsed_line[1]+" ne postoji.");  return 404; }
             
             //UPISI U USER>DAT W
             modifyDb(0, client.name, 3, "w", "user.dat");
@@ -366,7 +425,10 @@ namespace tracker
             vprint("Stigao sam", client.name);
             string[] parsed_line = line.Split(null);
             vprint(line, client.name);
-            if (parsed_line.Length > 1) { return 500; }
+            if (parsed_line.Length > 1) { return 400; }
+
+            //PROVERI DAL VEC STRIMUJE ILI WATCHUJE
+            if (client.role.Equals("x")) { return 407; } //cant stop
 
             //PROVERI FILESYSTEM i DATABAZU
             if (!checkFilesystem()) { return 500; }
@@ -396,6 +458,8 @@ namespace tracker
                 //IZBRISI IZ STRMRS.DAT USERA
                 deleteFromDb(0, client.name, "streamers.dat");
 
+                //PODRAZUMEVAMO DA STREAMER JAVI WATCHERIMA DA GASI STREAM PA MOZEMO DA OCEKUJEMO OD NJIH STOP
+                //KOJA CE IH POJEDINACNO PREPRAVITI
                 //OBRISI <>.DAT
                 deleteDb(client.name+".dat");
                 vprint("Kreirani fajl: " + client.name + ".dat postoji? " + File.Exists(returnDbPath(client.name + ".dat")), client.name);
@@ -410,7 +474,7 @@ namespace tracker
             else
             {
                 vprint("Uloga klijenta: " + client.role, client.name);
-                return 500;
+                return 407;
             }
         }
 
@@ -418,14 +482,14 @@ namespace tracker
         public int parseLiwa(string line) 
         {
             string[] parsed_line = line.Split(null);
-            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 500; }   //VRATI LOSE UNETA KOMANDA
+            if (parsed_line.Length != 1) { vprint("ERROR: parsed_line nije duzine 1 elementa, " + parsed_line.Length, client.name); return 400; }   //VRATI LOSE UNETA KOMANDA
 
             if (!checkFilesystem()) { return 500; }
             if (!checkDb(client.name + ".dat")) { return 500; }
 
             string[] watchers = File.ReadAllLines(client.tracker.path + "Data\\"+client.name+".dat");
 
-            if (watchers == null) { return 500; }
+            if (watchers == null) { return 409; }   //NEMA WATCHERA
             else
             {
                 string watchers_list = "";
@@ -440,10 +504,11 @@ namespace tracker
                 }
 
                 //SMISLITI KAKO DA SE RESI OVO ISTO
-                bw.Write(watchers_list);
+                //bw.Write(watchers_list);
+                response200 = watchers_list;
             }
 
-            return 200;
+            return 202;
         }
 
         public bool checkFilesystem()
