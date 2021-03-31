@@ -10,6 +10,7 @@ namespace tracker
         public string name = null;
         public string password = null;
         public string role = "x";
+        public string streamer_kog_gleda = null;
 
         //CONTROL
         public int id = -1;
@@ -30,6 +31,7 @@ namespace tracker
         public void Disconnect() 
         {
             //PREBACI IZ S/W u X
+            role = "x";
             client_thread.modifyDb(0, name, 3, "x", "user.dat");
             client_thread.deleteFromDb(0, name, "streamers.dat");
 
