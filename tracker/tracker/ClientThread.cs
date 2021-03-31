@@ -43,7 +43,7 @@ namespace tracker
                     input = br.ReadString();
                     createResponse(parseRequest(input));
                 }
-                catch (IOException)
+                catch (Exception)
                 {
                     vprint("je iznenada prekinuo vezu!", client.name);
                     client.Disconnect();
@@ -61,8 +61,8 @@ namespace tracker
             {
                 switch (line.Split(null)[0])
                 {
-                    case "INFO":
-                        //return_code = parseInfo(line);
+                    case "HELP":
+                        return_code = parseHelp(line);
                         break;
                     case "EXIT":
                         return_code = parseExit(line);
@@ -71,7 +71,7 @@ namespace tracker
                         return_code = parseList(line);
                         break;
                     case "LIWA":
-                        //return_code = parseLiwa(line);
+                        return_code = parseLiwa(line);
                         break;
                     case "STRM":
                         return_code = parseStrm(line);
@@ -80,7 +80,7 @@ namespace tracker
                         return_code = parseWtch(line);
                         break;
                     case "STOP":
-                        //return_code = parseStop(line);
+                        return_code = parseStop(line);
                         break;
                     case "USER":
                         return_code = 403;
@@ -94,8 +94,8 @@ namespace tracker
             {
                 switch (line.Split(null)[0])
                 {
-                    case "HELP":
-                        //return_code = parseHelp(line);
+                    case "INFO":
+                        return_code = parseInfo(line);
                         break;
                     case "USER":
                         return_code = parseUser(line);
@@ -179,21 +179,21 @@ namespace tracker
             switch (request_code)
             {
                 case 100:                   //INFO
-                    response = "100 This is p2p streaming application";
+                    response = "100 This is p2p streaming application by Mirko and Igor";
                     break;
                 case 101:                   //HELP
-                    response = "101 If not logged in: USER, HELP if logged in: STRM, WTCH, STOP, LIST, LIWA";
+                    response = "101 Commands available: STRM, WTCH, STOP, LIST, LIWA";
                     break;
                 case 200:
                     if (response200 == null) { response = "200 Ok"; }
                     else { response = "200 " + response200; response200 = null; }
                     break;
                 case 201:                   //Sending LIST
-                    if (response200 == null) { response = "201 Ok"; }   //Ako nema strimera sada
+                    if (response200 == null || response200.Equals("") ) { response = "201 Ok"; }   //Ako nema strimera sada
                     else { response = "201 " + response200; response200 = null; }
                     break;
                 case 202:                   //Sending LIWA
-                    if (response200 == null) { response = "202 Ok"; }   //Ako nema watchera sada
+                    if (response200 == null || response200.Equals("")) { response = "202 Ok"; }   //Ako nema watchera sada
                     else { response = "202 " + response200; response200 = null; }
                     break;
                 case 300:
@@ -277,7 +277,20 @@ namespace tracker
             vprint("Returned from db:user.dat, " + user_line, client.name);
 
             //AKO VRATI NULL, ternary operator (bool)?if_true:if_false;
-            if (user_line == null) { return registerUser(line) ? 200 : 500; }
+            if (user_line == null) 
+            {
+                if (registerUser(line))
+                {
+                    //SREDI KOD MALO DA SE NE PONAVLJA
+                    client.name = parsed_line[1];
+                    client.password = parsed_line[2];
+                    client.isLoggedIn = true;
+                    client.ip_address = client.socket.Client.RemoteEndPoint.ToString();
+                    client.role = "x";
+                    return 200;
+                }
+                else { return 500; }
+            }
             else if (parsed_user[0].Equals(parsed_line[1]) && parsed_user[1].Equals(parsed_line[2])) 
             {
                 client.name = parsed_line[1];
@@ -290,11 +303,20 @@ namespace tracker
             else { return 402; }
         }
 
+        public int parseInfo(string line) 
+        {
+            return 100;
+        }
+
+        public int parseHelp(string line) 
+        {
+            return 101;
+        }
+
         public int parseExit(string line) 
         {
             //bw.Write("OK");
             client.Disconnect();
-            if (client.id >= 0) { client.tracker.client_array[client.id] = null; }
             return 200;
         }
 
@@ -313,19 +335,19 @@ namespace tracker
             else
             {
                 string streamers_list = "";
-
+                
                 for(int i = 0; i < streamers.Length; i++)
                 {
-                    streamers_list += streamers[i];
+                    string[] streamer = streamers[i].Split(null);
+                    streamers_list += streamer[0]+":"+streamer[1];
                     if(i + 1 != streamers.Length)
                     {
-                        streamers_list += ':';
+                        streamers_list += ';';
                     }
                 }
 
-                //SMISLITI KAKO DA SE RESI OVO
                 //bw.Write(streamers_list);
-                response200 = streamers_list;
+                response200 = streamers_list.Equals("") ? null : streamers_list;
             }
 
             return 201;
@@ -354,7 +376,7 @@ namespace tracker
             //UPISI U STRMRS.DAT USERA
             //username		title
             //prikupi title iz komande
-            if (parsed_line.Length>10) { return 405; }      //Title too long
+            if (line.Length>25) { return 405; }      //Title too long
 
             string title = "";
             for (int i = 1; i<parsed_line.Length; i++) 
@@ -505,7 +527,7 @@ namespace tracker
 
                 //SMISLITI KAKO DA SE RESI OVO ISTO
                 //bw.Write(watchers_list);
-                response200 = watchers_list;
+                response200 = watchers_list.Equals("") ? null : watchers_list;
             }
 
             return 202;
@@ -519,7 +541,6 @@ namespace tracker
                 //Check and create files inside of the directory
                 if (!File.Exists(client.tracker.path + "Data\\user.dat")) { File.Create(client.tracker.path + "Data\\user.dat").Close(); }
                 if (!File.Exists(client.tracker.path + "Data\\streamers.dat")) { File.Create(client.tracker.path + "Data\\streamers.dat").Close(); }
-                if (!File.Exists(client.tracker.path + "Data\\watchers.dat")) { File.Create(client.tracker.path + "Data\\watchers.dat").Close(); }
             }
             else 
             {
@@ -527,14 +548,12 @@ namespace tracker
                 Directory.CreateDirectory(client.tracker.path + "Data\\");
                 File.Create(client.tracker.path + "Data\\user.dat").Close();
                 File.Create(client.tracker.path + "Data\\streamers.dat").Close();
-                File.Create(client.tracker.path + "Data\\watchers.dat").Close();
             }
 
             //After creating check if they exist again and return based on the result
             vprint(File.Exists(client.tracker.path + "Data\\user.dat") + " - user.dat"); 
-            vprint(File.Exists(client.tracker.path + "Data\\streamers.dat") + " - streamers.dat"); 
-            vprint(File.Exists(client.tracker.path + "Data\\watchers.dat") + " - watchers.dat");
-            if (File.Exists(client.tracker.path + "Data\\user.dat") && File.Exists(client.tracker.path + "Data\\watchers.dat") && File.Exists(client.tracker.path + "Data\\streamers.dat")) { return true; }
+            vprint(File.Exists(client.tracker.path + "Data\\streamers.dat") + " - streamers.dat");
+            if (File.Exists(client.tracker.path + "Data\\user.dat") && File.Exists(client.tracker.path + "Data\\streamers.dat")) { return true; }
             vprint("Vracam false izgleda");
             return false;
         }
