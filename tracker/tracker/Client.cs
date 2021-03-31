@@ -46,6 +46,7 @@ namespace tracker
             client_thread.n.Close();
             socket.Close();
             client_thread.isRunning = false;
+            if (id >= 0) { tracker.client_array[id] = null; }
 
             return;
         }
