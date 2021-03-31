@@ -39,7 +39,6 @@ namespace tracker
                 try
                 {
                     input = br.ReadString();
-                    //vprint(input, client.name);
                     createResponse(parseRequest(input));
                 }
                 catch (IOException)
@@ -103,6 +102,70 @@ namespace tracker
 
             return return_code;
         }
+
+
+        /*RESPONSE CODES
+
+            - 1xx: Informational - Request received, continuing process
+
+            - 2xx: Success - The action was successfully received,
+                understood, and accepted
+
+            - 3xx: Redirection - Further action must be taken in order to
+                complete the request
+
+            - 4xx: Client Error - The request contains bad syntax or cannot
+                be fulfilled
+
+            - 5xx: Server Error - The server failed to fulfill an apparently
+                valid request
+
+
+            Status-Code    =
+            | "100"  ; Info... (Name of program)
+            | "101"  ; Help... (Commands)
+
+            | "200"  ; OK (+ procita vrednost iz response200 variable;)
+            | "201"  ; Sending List s1;s2;s3;...
+            | "202"  ; Sending List w1;w2;w3;...
+
+            | "300"  ; //Further action must be taken in order to complete this req
+                
+                    Bad Request
+                    Unauthorized
+                //USER
+                    Wrong password (pokriva i pogresan password i username postoji vec)
+                    Already logged in (vec ulogovan)
+                    Ok (pokriva tacan password i nema usera pa ga registruje)
+                //STRM
+                    Title too long (npr ako ima vise od 8 reci)
+                    Vec snimate ili gledate
+                    Ok (strimujete sada)
+                //WTCH
+                    User ne postoji (pokriva da stvarno ne postoji i da ne strimuje sada)
+                    Vec gledate nesto (ako si vec watcher)
+                    Ok (gledas ga sada)
+                //STOP
+                    Cant stop (pokriva ako ne strimujete i ne gledate)
+                    Ok (uspesno resetovan role)
+                //LIST
+                    Sending list (Ako saljemo kroz response nek bude npr 233 streamer1;streamer2;streamer3...)
+                //LIWA
+                    Sending list (Isto kao LIST, 234 watccher1;watcher2;watcher3...)
+
+            | "400"  ; Bad Request
+            | "401"  ; Unauthorized
+            | "402"  ; Wrong password
+            | "403"  ; Already logged in
+            | "404"  ; Title too long
+            | "405"  ; User not found
+            | "406"  ; Already watcher/Streamer
+            | "407"  ; Cant stop
+            
+            | "500"  ; Internal Server Error
+            | "501"  ; Not Implemented
+
+        */
 
         public void createResponse(int request_code)
         {
