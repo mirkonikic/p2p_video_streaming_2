@@ -44,8 +44,8 @@ namespace tracker
                 }
                 catch (IOException)
                 {
-
                     vprint("je iznenada prekinuo vezu!", client.name);
+                    client.Disconnect();
                     return;
                 }
             }
