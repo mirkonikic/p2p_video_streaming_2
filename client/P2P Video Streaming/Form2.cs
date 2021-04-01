@@ -9,12 +9,13 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace P2P_Video_Streaming
 {
     public partial class Form2 : Form
     {
-        
+
         NetworkStream stream;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
@@ -36,15 +37,23 @@ namespace P2P_Video_Streaming
             string strm = serverInput.ReadString();
             string[] code_streamers = strm.Split(null);
             string code = code_streamers[0];
-            string[] streamers = code_streamers[1].Split(';');
-            string streamer = "";
 
-            int i = 1;
-            int j = 0;
-            int counter = 0;
-        
-            if(code == "201")
+            Label mylab = new Label();
+            Button button = new Button();
+            mylab.AutoSize = true;
+            mylab.ForeColor = Color.Black;
+            mylab.Font = new Font("Calibri", 10);
+
+            if (code == "201")
             {
+                string[] streamers = code_streamers[1].Split(';');
+                string streamer = "";
+
+                int i = 1;
+                int j = 0;
+                int counter = 0;
+
+
                 foreach (string streamer_info in streamers)
                 {
                     string[] info = streamer_info.Split(':');
@@ -57,14 +66,8 @@ namespace P2P_Video_Streaming
                     }
 
                     streamer = $"streamer{i}: {info[0]}    title: {title}";
-
-                    Label mylab = new Label();
-                    Button button = new Button();
-
+                    
                     mylab.Text = streamer;
-                    mylab.AutoSize = true;
-                    mylab.ForeColor = Color.Black;
-                    mylab.Font = new Font("Calibri", 10);
 
                     button.Text = "PLAY";
                     button.AutoSize = true;
@@ -87,15 +90,18 @@ namespace P2P_Video_Streaming
                     j += 30;
                     counter++;
                 }
+            } else if (code == "408")
+            {
+                mylab.Text = "No online streamers found";
+                mylab.Location = new Point(12, mylab.Location.Y + mylab.Height);
+                this.Controls.Add(mylab);
             }
-
-          
 
         }
 
         private void startStreamBtn_Click(object sender, EventArgs e)
         {
-            serverOutput.Write("STRM mirko strimuje");
+            string userAnswer = Microsoft.VisualBasic.Interaction.InputBox("Enter title of your stream", "Title", "");
         }
     }
 }

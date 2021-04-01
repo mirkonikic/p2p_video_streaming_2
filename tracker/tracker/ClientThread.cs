@@ -347,10 +347,10 @@ namespace tracker
                 }
 
                 //bw.Write(streamers_list);
-                response200 = streamers_list.Equals("") ? null : streamers_list;
+                response200 = streamers_list;
+                return streamers_list.Equals("") ? 408 : 201;
             }
 
-            return 201;
         }
 
         //Zeli da strimuje, apenduje ga u streamers.dat i pravi mu fajl <>.dat, takodje u user.dat stavjla w i u client.role=w;
