@@ -51,7 +51,7 @@ namespace P2P_Video_Streaming
             if (code == "200")
             {
                 this.Hide();
-                var form2 = new Form2(stream);
+                var form2 = new Form2(stream, username);
                 form2.Closed += (s, args) => this.Close();
                 form2.Show();
 

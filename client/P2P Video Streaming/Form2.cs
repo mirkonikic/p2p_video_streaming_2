@@ -17,12 +17,14 @@ namespace P2P_Video_Streaming
     {
 
         NetworkStream stream;
+        string username;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
-        public Form2(NetworkStream stream)
+        public Form2(NetworkStream stream, string username)
         {
             InitializeComponent();
             this.stream = stream;
+            this.username = username;
         }
 
 
@@ -101,7 +103,9 @@ namespace P2P_Video_Streaming
 
         private void startStreamBtn_Click(object sender, EventArgs e)
         {
-            string userAnswer = Microsoft.VisualBasic.Interaction.InputBox("Enter title of your stream", "Title", "");
+            string titleName = Microsoft.VisualBasic.Interaction.InputBox("Enter title of your stream", "Title", "");
+            string message = $"STRM {username} {titleName}";
+            serverOutput.Write(message);
         }
     }
 }
