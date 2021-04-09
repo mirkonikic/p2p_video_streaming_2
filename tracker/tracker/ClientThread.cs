@@ -379,7 +379,7 @@ namespace tracker
             if (line.Length>25) { return 405; }      //Title too long
 
             string title = "";
-            for (int i = 1; i<parsed_line.Length; i++) 
+            for (int i = 2; i<parsed_line.Length; i++) 
             {
                 title += parsed_line[i] + "_";
             }
