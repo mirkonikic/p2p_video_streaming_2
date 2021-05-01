@@ -10,7 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace P2P_Video_Streaming
+namespace client
+
 {
     public partial class Form1 : Form
     {
@@ -21,12 +22,13 @@ namespace P2P_Video_Streaming
         public Form1()
         {
             InitializeComponent();
+           
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             Image image = Image.FromFile(Directory.GetCurrentDirectory() + @"\Capture.png");
-            pictureBox1.Image = (Image)(new Bitmap(image, new Size(300,400)));
+            pictureBox1.Image = (Image)(new Bitmap(image, new Size(400, 450)));
 
 
             client = new TcpClient("127.0.0.1", 9090);
@@ -48,6 +50,7 @@ namespace P2P_Video_Streaming
             string[] inputSplit = inputMessage.Split(null);
             string code = inputSplit[0];
 
+            
             if (code == "200")
             {
                 this.Hide();
@@ -60,7 +63,8 @@ namespace P2P_Video_Streaming
 
         }
 
-      
+        
     }
 
 }
+
