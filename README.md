@@ -1,6 +1,12 @@
 # ZOOM2 - p2p Video Streaming 
 University project in course Networking and Telecommunicataions
 
+Made by:
+---
++ [@igornedovic](https://www.github.com/igornedovic)
++ [@mirkonikic](https://www.github.com/mirkonikic)
+
+
 Consists of two main parts:
 
 ## 1.Client
@@ -35,12 +41,6 @@ Options:
 1. Fork a repo and create a new branch.
 2. Make changes and test
 3. Submit Pull Request with comprehensive description of changes
-
-**Acknowledgements**
----
-
-+ [@igornedovic](https://www.github.com/igornedovic).
-+ [@mirkonikic](https://www.github.com/mirkonikic)
 
 **Donations**
 ---
