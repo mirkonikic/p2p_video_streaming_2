@@ -10,6 +10,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//KLASA PAKET
+    //Sequence Number
+    //
+    //FrameData
+    //
+    //byte[] header;
+    //int payloadSize;
+    //byte[] payload;
+
+//KLIJENT POSTAJE STREAMER
+    //Otvara TcpListener kao kontrolna tcp konekcija
+    //Napravi array klijent objekata u koje cuva klijent objekte koji se konektuju?
+    //Smisli protokol za CONTROL COMMANDS: Handshake, INFO, START, PAUSE, EXIT, (mozda i -> TIMESTAMP <Odakle da pusti>)
+    //Smisli protokol za slanje video frejmova, tako da bude SEQ number, BrFrejmovaUSekundi, OffsetForFrameData..., JedanFrejmBinaryData   
+    //Udp Socket pogledaj kako, i samo salje pakete koje smo napravili, mozda je najbolje napraviti klasu paket.
+
+//KLIJENT POSTAJE WATCHER
+    //Otvara TcpClient-a kao kontrolna tcp konekcija i povezuje se na ip adresu streamera kog zeli da gleda
+    //Preko info komande dobije info na koj port da se prikaci za UDP video
+    //Udp Socket koji prima pakete i prosledjuje u funkciju koja parsuje i vraca Image objekat?
+
+//KLIJENT POSTAJE NESTO OD TA DVA
+    //Imamo Thread Klasu za oba
+    //Kad klikne da postane nesto samo se pokrene taj thread
+    //Kad klikne da prestane samo se ugasi thread
+    //Cuvaj threadove i npr dal je streamer ili watcher da ne bi mogao da bude oba u isto vreme
+
 namespace client
 
 {
