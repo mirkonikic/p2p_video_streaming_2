@@ -8,6 +8,9 @@ using System.IO;
 using System.Net.Sockets;
 using System.Windows.Forms;
 
+//Ovo nek bude thread za ako je klijent samo
+
+//NEK PRVO RADI SVE SAMO SA FREJMOVIMA PA TEK ONDA UBACIMO OVU PACKET.CS klasu
 
 namespace client
 {
@@ -112,6 +115,8 @@ namespace client
         }
 
 
+        //OVDE MOZEMO SAMO DA OTVORIMO NOVI THREAD i npr podesimo neku promenljivu da se zna da je strimer
+        //da ne moze da zapocne i gledanje u isto vreme
         private void startStreamBtn_Click(object sender, EventArgs e)
         {
 

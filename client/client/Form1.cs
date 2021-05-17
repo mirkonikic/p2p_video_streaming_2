@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//ZA PROBLEM SA NOVIM STRIMERIMA, najlakse je refresh dugme ja msm kod klijenta, kad klikne, posalje LIST trackeru i apdejtuje
+
 //KLASA PAKET
     //Sequence Number
     //
@@ -31,7 +33,7 @@ using System.Windows.Forms;
     //Preko info komande dobije info na koj port da se prikaci za UDP video
     //Udp Socket koji prima pakete i prosledjuje u funkciju koja parsuje i vraca Image objekat?
 
-//KLIJENT POSTAJE NESTO OD TA DVA
+//KLIJENT POSTAJE NESTO OD TA DVA (nzm dal ovo preko threada)
     //Imamo Thread Klasu za oba
     //Kad klikne da postane nesto samo se pokrene taj thread
     //Kad klikne da prestane samo se ugasi thread
@@ -42,6 +44,7 @@ namespace client
 {
     public partial class Form1 : Form
     {
+        //Veza sa trakerom
         TcpClient client;
         NetworkStream stream;
         BinaryReader serverInput;
@@ -54,10 +57,11 @@ namespace client
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Ovo podesi sliku iz foldera na logo aplikacije
             Image image = Image.FromFile(Directory.GetCurrentDirectory() + @"\Capture.png");
             pictureBox1.Image = (Image)(new Bitmap(image, new Size(400, 450)));
 
-
+            //Zapocne konekciju sa trakerom
             client = new TcpClient("127.0.0.1", 9090);
             stream = client.GetStream();
             serverInput = new BinaryReader(stream);
@@ -66,7 +70,7 @@ namespace client
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-
+            //Sacuva pass i usernm i loguje se
             string username = tbUsername.Text;
             string password = tbPassword.Text;
 
@@ -80,6 +84,7 @@ namespace client
             
             if (code == "200")
             {
+                //Ako je tacno pozovi formu 2
                 this.Hide();
                 var form2 = new Form2(stream, username);
                 form2.Closed += (s, args) => this.Close();
