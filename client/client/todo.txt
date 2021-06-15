@@ -1,0 +1,57 @@
+﻿Kako forme da rasporedimo:
+	
+	Kad se jos nije ulogovao:                              FORM1
+												"logovanje"  |
+															 |
+														   FORM2
+															/   \
+														   /     \
+														  /       \
+												 "Click strimer"   \
+														/			\
+											         FORM3     "Click watcher"
+																	  \
+																     FORM4
+	
+
+	Prosledjujes uvek [USERNAME, STREAM, PRETHODNU_FORMU]
+	-stream da se ne bi izgubila konekcija sa trackerom
+	-prethodnu_formu da bi mogao da je sakrijes i otkrijes kad ugasis child formu
+	USERNAME nam mozda ne treba jer tracker vodi racuna o tome...
+
+
+	Ovako mozemo i da uredjujemo lepo forme, a lakse je nego kodom da pravimo sve
+
+
+	SADA:
+		-PITAJ USERA ZA USERNAME iz tcplistenera
+			Salje mi u formatu: DETAILS <USERNAME>
+			Ja odgovorim: 200 Ok_my_port_is 11000
+
+Protocol izmedju streamera i watchera:
+	- DETAILS <USERNAME>				//Ovo je bitno streameru
+	- TEXT <text...>					//Ovo se upise u chat box
+
+	Sta treba uraditi:
+	+smisliti raspored GUI formi
+	-Form2 "Menu" zavrsiti
+	-Form3 "Streamer" zavrsiti
+		+Dva threada kreirati:		1. Prikuplja i salje UDP frejmove i prati klijent niz		2. Prikuplja i ubacuje u niz klijente
+		+Streamer klasa cuva niz
+		+[2] thread otvara TcpListener i prikuplja Klijente 9091
+		+[2] kad prikupi klijenta, kreira Client objekat i pozove [1] metodu za ubacivanje niz
+		+[2] Krece u sledeci loop
+		+[1] prati, prepravlja i brise clanove niza
+		+[1] prati broj klijenata u nizu i maks moguci broj
+		-[1] uzima frejmove sa kamere i salje ih na svoj UDP port
+		-[1] sa UDP porta primaju svi klijenti iz niza
+	-Form4 "Watcher" zavrsiti
+	-Unaprediti slanje frejmova kroz pakete sa SEQ brojem
+	-Srediti dizajn
+	-Dodati sitnice:
+		-DODAJ THREAD ZA SVAKOG KLIJENTA NA PEER STREAMERU, da bi mogao da primas npr 'TEXT' komande i upisujes u textArea
+		-Menu refresh dugme, koje updateuje LIST strimera
+		-Update ime/titl strima
+		-Prikazi broj gledalaca
+		-Dodaj popup obavestenja za streamera, ili chat u kom pise kad se neko log onuje
+		-Dodaj lajkove i sortiranje prema istim...
