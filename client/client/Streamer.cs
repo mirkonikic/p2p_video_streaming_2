@@ -31,6 +31,7 @@ namespace client
         //Client Array
         public Client[] client_array;
         public static int max_clients = 256;
+        public int number_of_clients = 0;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -83,12 +84,26 @@ namespace client
             get { return max_clients; }
         }
 
+        public void updateNumberOfClients() 
+        {
+            int nm = 0;
+            for (int i = 0; i < max_clients; i++)
+            {
+                if (client_array[i] != null) 
+                {
+                    nm++;
+                }
+            }
+            number_of_clients = nm;
+        }
+
         public void nullOutClientArray()
         {
             for (int i = 0; i < max_clients; i++)
             {
                 client_array[i] = null;
             }
+            updateLogLabel("Nulled out the client array");
         }
 
         public int returnFirstFreePlaceInArray()
@@ -137,9 +152,9 @@ namespace client
             StreamerConnections sc = new StreamerConnections(this);
             Thread tsc = new Thread(sc.run);
             tsc.Start();
-            
-//Otvori UDP Socket i snadji se
-            
+
+            //Otvori UDP Socket i snadji se
+
 
             //Zapocni snimanje
             capture = new VideoCapture();
@@ -153,6 +168,9 @@ namespace client
             {
                 mat = new Mat();
                 capture.Retrieve(mat);
+
+                updateNumberOfClients();
+                viewLab.Text = "" + number_of_clients + " " + "viewers";
 
                 //sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
 
@@ -205,14 +223,43 @@ namespace client
 
 
 
+        //NIJE GOTOVO KAD STIGNES ZAVRSI...
+        //Treba da posalje svima 'TEXT <text....>' komandu
+        //Onda svi dobiju poruku od streamera
+        public void sendToAllClientsTcp(string Data)
+        {
+
+        }
+
+        public void sendToAllClientsUdp(Byte[] Data) 
+        {
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         //Gotovo i uredjeno
+
+        public void updateLogLabel(string data) 
+        {
+            logLab.Text = data;
+        }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
 
         public string returnClientPort(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[1]; }
 
-        private void stop_Click(object sender, EventArgs e)
+        private void stopBtn_Click(object sender, EventArgs e)
         {
             serverOutput.Write("STOP");
             capture.Dispose();

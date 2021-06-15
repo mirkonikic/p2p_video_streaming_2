@@ -50,6 +50,7 @@ namespace client
         {
             //Standard port na koji se klijent prikaci za streamera, da se ne bi sudarali streamer i tracker
             TcpListener listener = new TcpListener(IPAddress.Any, 9091);
+            listener.Start();
             TcpClient client;
             Boolean end = false;
 

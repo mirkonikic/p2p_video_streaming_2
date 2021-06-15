@@ -28,6 +28,9 @@
 			Salje mi u formatu: DETAILS <USERNAME>
 			Ja odgovorim: 200 Ok_my_port_is 11000
 
+Protocol izmedju streamera i watchera:
+	- DETAILS <USERNAME>				//Ovo je bitno streameru
+	- TEXT <text...>					//Ovo se upise u chat box
 
 	Sta treba uraditi:
 	+smisliti raspored GUI formi
@@ -46,6 +49,7 @@
 	-Unaprediti slanje frejmova kroz pakete sa SEQ brojem
 	-Srediti dizajn
 	-Dodati sitnice:
+		-DODAJ THREAD ZA SVAKOG KLIJENTA NA PEER STREAMERU, da bi mogao da primas npr 'TEXT' komande i upisujes u textArea
 		-Menu refresh dugme, koje updateuje LIST strimera
 		-Update ime/titl strima
 		-Prikazi broj gledalaca
