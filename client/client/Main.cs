@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//OVDE ZAPOCINJE PROGRAM, program.cs zove Form1() klasu
+
 //ZA PROBLEM SA NOVIM STRIMERIMA, najlakse je refresh dugme ja msm kod klijenta, kad klikne, posalje LIST trackeru i apdejtuje
 
 //KLASA PAKET
@@ -42,19 +44,22 @@ using System.Windows.Forms;
 namespace client
 
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
-        //Veza sa trakerom
+        //Promenljive za vezu sa trakerom
         TcpClient client;
         NetworkStream stream;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
-        public Form1()
+
+        //Inicijalizacija forme
+        public Main()
         {
             InitializeComponent();
            
         }
 
+        //Po ucitavanju/loadovanju forme poziva se ova metoda
         private void Form1_Load(object sender, EventArgs e)
         {
             //Ovo podesi sliku iz foldera na logo aplikacije
@@ -66,27 +71,31 @@ namespace client
             stream = client.GetStream();
             serverInput = new BinaryReader(stream);
             serverOutput = new BinaryWriter(stream);
+            //Sada imamo serverInput za podataka od trackera i output za slanje ka trackeru
         }
 
+        //Pojavljuje se login window i po slanju ako je stiglo 200 OK onda je ulogovan i prosledjuje se dalje - Form2()
         private void btnLogin_Click(object sender, EventArgs e)
         {
             //Sacuva pass i usernm i loguje se
             string username = tbUsername.Text;
-            string password = tbPassword.Text;
+            //string password = tbPassword.Text;
 
-            string message = "USER " + username + " " + password;
+            //Kreira komandu koju salje
+            string message = "USER " + username + " " + tbPassword.Text;
             serverOutput.Write(message);
 
+            //Primi od servera response
             string inputMessage = serverInput.ReadString();
             string[] inputSplit = inputMessage.Split(null);
             string code = inputSplit[0];
 
-            
+            //Ako je 200, dobro izvrsen zahtev
             if (code == "200")
             {
-                //Ako je tacno pozovi formu 2
+                //Ako je tacno pozovi formu 2 i prosledi socket i username
                 this.Hide();
-                var form2 = new Form2(stream, username);
+                var form2 = new Menu(stream, username);
                 form2.Closed += (s, args) => this.Close();
                 form2.Show();
 
