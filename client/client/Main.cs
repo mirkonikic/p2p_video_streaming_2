@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -65,18 +66,80 @@ namespace client
             //Ovo podesi sliku iz foldera na logo aplikacije
             Image image = Image.FromFile(Directory.GetCurrentDirectory() + @"\Capture.png");
             pictureBox1.Image = (Image)(new Bitmap(image, new Size(400, 450)));
-
-            //Zapocne konekciju sa trakerom
-            client = new TcpClient("127.0.0.1", 9090);
-            stream = client.GetStream();
-            serverInput = new BinaryReader(stream);
-            serverOutput = new BinaryWriter(stream);
-            //Sada imamo serverInput za podataka od trackera i output za slanje ka trackeru
         }
 
         //Pojavljuje se login window i po slanju ako je stiglo 200 OK onda je ulogovan i prosledjuje se dalje - Form2()
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            //UZMI IZ tracker_settings ip i port
+            //proveri dal ima nesto u njima
+            //ako nema koristi default => 127.0.0.1:9090
+            string ip_address = "127.0.0.1";
+            int port = 9090;
+
+            
+
+            //Proveri dal su polja prazna i ako nisu uporedi ih sa regexom
+            //Ako jesu umesto praznih ubaci default
+
+            //Proverava port
+            if (!String.IsNullOrEmpty(tbPort.Text))
+            {
+                //REGEX za port
+                String port_input = tbPort.Text;
+                Regex port_rgx = new Regex(@"^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$");
+
+                //Proveri dal je port dobro unesen
+                if (port_rgx.IsMatch(port_input))
+                {
+                    port = Int16.Parse(port_input);
+                }
+                else 
+                {
+                    MessageBox.Show("Port number should consist only of numbers and should not exceed 65535", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            //Proverava ip address
+            if (!String.IsNullOrEmpty(tbIpAddress.Text)) 
+            {
+                //REGEX za ip adresu
+                String ip_addr_input = tbIpAddress.Text;
+                //Regex ip_rgx = new Regex(@"'\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b'");
+                Regex ip_rgx = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
+
+                //Proveri dal je ip addressa dobro unesena
+                if (ip_rgx.IsMatch(ip_addr_input))
+                {
+                    MessageBox.Show("Match", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ip_address = ip_addr_input;
+                }
+                else
+                {
+                    MessageBox.Show($"Ip address {ip_addr_input} should be in right format", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            if (String.IsNullOrEmpty(tbUsername.Text))
+            {
+                MessageBox.Show("Username should not be empty", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            //Proverava ip address
+            if (String.IsNullOrEmpty(tbPassword.Text))
+            {
+                MessageBox.Show("Password should not be empty", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            //Zapocne konekciju sa trakerom
+            client = new TcpClient(ip_address, port);
+            stream = client.GetStream();
+            serverInput = new BinaryReader(stream);
+            serverOutput = new BinaryWriter(stream);
+            //Sada imamo serverInput za podataka od trackera i output za slanje ka trackeru
+
             //Sacuva pass i usernm i loguje se
             string username = tbUsername.Text;
             //string password = tbPassword.Text;
