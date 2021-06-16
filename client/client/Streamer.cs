@@ -264,10 +264,10 @@ namespace client
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            serverOutput.Write("STOP");
-            capture.Dispose();
-            listener.Stop();
-            forma_parent.Show();
+            //serverOutput.Write("STOP");
+            //capture.Dispose();
+            //listener.Stop();
+            //forma_parent.Show();
             this.Close();
         }
 
@@ -275,9 +275,8 @@ namespace client
         {
             serverOutput.Write("STOP");
             capture.Dispose();
-            listener.Stop();
+            //listener.Stop();
             forma_parent.Show();
-            listener.Stop();
         }
 
 
