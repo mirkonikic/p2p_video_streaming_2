@@ -1,8 +1,8 @@
 ﻿Sutra:
-	-Popravi sto se gasi Form2, tcplistener problem
-	-Probaj da se nakacite na moju ip adresu
-	-Sredi tcp konekcije i server-watcher protocol
-	-Sredi udp multicast group da salje frejmove samo
+-Popravi sto se gasi Form2, tcplistener problem
+-Probaj da se nakacite na moju ip adresu
+-Sredi tcp konekcije i server-watcher protocol
+-Sredi udp multicast group da salje frejmove samo
 
 Kako forme da rasporedimo:
 	
