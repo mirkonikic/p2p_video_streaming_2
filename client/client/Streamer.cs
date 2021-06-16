@@ -273,5 +273,7 @@ namespace client
             capture.Dispose();
             forma_parent.Show();
         }
+
+
     }
 }

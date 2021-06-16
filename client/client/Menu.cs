@@ -79,10 +79,19 @@ namespace client
                     mylab.Text = streamer;
 
 
-                    button.AccessibleName = "btnPlay";
+                    button.AccessibleName = $"btnPlay:{info[0]}";
                     button.Text = "PLAY";
                     button.AutoSize = true;
 
+                    
+                    button.Click += (s, e) =>
+                    {
+                        string[] user = button.AccessibleName.Split(':');
+                        MessageBox.Show($"Kliknuo sam na {user[1]}-ovo PLAY!");
+                        
+                        
+                    };
+                    
 
                     //Podesava poziciju strimera koji strimuju
 
@@ -114,6 +123,7 @@ namespace client
                 this.Controls.Add(notFound);
             }
         }
+
 
         private void playBtn_Click(object sender, EventArgs e)
         {
