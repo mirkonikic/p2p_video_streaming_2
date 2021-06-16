@@ -33,6 +33,9 @@ namespace client
         public static int max_clients = 256;
         public int number_of_clients = 0;
 
+        //Listener za klijente
+        public TcpListener listener;
+
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
         string username;
@@ -263,6 +266,7 @@ namespace client
         {
             serverOutput.Write("STOP");
             capture.Dispose();
+            listener.Stop();
             forma_parent.Show();
             this.Close();
         }
@@ -271,7 +275,9 @@ namespace client
         {
             serverOutput.Write("STOP");
             capture.Dispose();
+            listener.Stop();
             forma_parent.Show();
+            listener.Stop();
         }
 
 

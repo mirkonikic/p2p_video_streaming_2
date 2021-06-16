@@ -49,14 +49,14 @@ namespace client
         public void run()
         {
             //Standard port na koji se klijent prikaci za streamera, da se ne bi sudarali streamer i tracker
-            TcpListener listener = new TcpListener(IPAddress.Any, 9091);
-            listener.Start();
+            parent.listener = new TcpListener(IPAddress.Any, 9091);
+            parent.listener.Start();
             TcpClient client;
             Boolean end = false;
 
             while (end != true) 
             {
-                client = listener.AcceptTcpClient();
+                client = parent.listener.AcceptTcpClient();
                 findInfoAboutClient(client);
             }
         }

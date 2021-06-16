@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 //Pogledaj todo.txt za raspored Form-i, ova ce biti samo za klijenta
@@ -134,9 +135,20 @@ namespace client
 
         private void startStreamBtn_Click(object sender, EventArgs e)
         {
-            var form3 = new Streamer(stream, username, this);
-            //Form3 krije i pokazuje ovu formu preko ^
-            form3.Show();
+            Regex pattern = new Regex(@"^([1-9][0-9]?|100)$");
+            string maxWatchers = tbMaxWatchers.Text;
+
+            if(!string.IsNullOrEmpty(maxWatchers) && pattern.IsMatch(maxWatchers))
+            {
+                var form3 = new Streamer(stream, username, this);
+                //Form3 krije i pokazuje ovu formu preko ^
+                form3.Show();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a maximum number of watchers!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
     }
 }
