@@ -54,10 +54,18 @@ namespace client
             TcpClient client;
             Boolean end = false;
 
-            while (end != true) 
+            try
             {
-                client = parent.listener.AcceptTcpClient();
-                findInfoAboutClient(client);
+                while (end != true)
+                {
+                    client = parent.listener.AcceptTcpClient();
+                    findInfoAboutClient(client);
+                }
+            }
+            catch (SocketException ex)
+            {
+
+                Console.WriteLine(ex.Message);
             }
         }
     }

@@ -29,9 +29,12 @@ namespace client
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
             this.startStreamBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.tbMaxWatchers = new System.Windows.Forms.TextBox();
+            this.refreshBtn = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // startStreamBtn
@@ -60,11 +63,32 @@ namespace client
             this.tbMaxWatchers.Size = new System.Drawing.Size(217, 27);
             this.tbMaxWatchers.TabIndex = 2;
             // 
+            // refreshBtn
+            // 
+            this.refreshBtn.Image = ((System.Drawing.Image)(resources.GetObject("refreshBtn.Image")));
+            this.refreshBtn.Location = new System.Drawing.Point(638, 12);
+            this.refreshBtn.Name = "refreshBtn";
+            this.refreshBtn.Size = new System.Drawing.Size(40, 38);
+            this.refreshBtn.TabIndex = 3;
+            this.refreshBtn.UseVisualStyleBackColor = true;
+            this.refreshBtn.Click += new System.EventHandler(this.refreshBtn_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(684, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(143, 20);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Refresh streamer list";
+            // 
             // Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(879, 464);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.refreshBtn);
             this.Controls.Add(this.tbMaxWatchers);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.startStreamBtn);
@@ -81,5 +105,7 @@ namespace client
         private System.Windows.Forms.Button startStreamBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbMaxWatchers;
+        private System.Windows.Forms.Button refreshBtn;
+        private System.Windows.Forms.Label label2;
     }
 }

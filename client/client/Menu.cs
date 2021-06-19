@@ -2,9 +2,11 @@
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -20,6 +22,15 @@ namespace client
         string username;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
+        string maxWatchers;
+
+        List<Button> playButtonList = new List<Button>();
+        List<Label> myLabList = new List<Label>();
+
+        public string MaxWatchers
+        {
+            get => maxWatchers;
+        }
 
         //Konstruktor klase Form2(), plus inicijalizacija
         public Menu(NetworkStream stream, string username)
@@ -35,6 +46,11 @@ namespace client
 
         //Kad se ucita forma 2, onda...
         private void Form2_Load(object sender, EventArgs e)
+        {
+            ListAllStreamers();
+        }
+
+        private void ListAllStreamers()
         {
             //Pozovi LIST komandu trackera, da vidis ko je sve online i strimuje
             serverOutput.Write("LIST");
@@ -80,19 +96,16 @@ namespace client
                     mylab.Text = streamer;
 
 
-                    button.AccessibleName = $"btnPlay:{info[0]}";
+                    button.AccessibleName = $"{info[0]}";
                     button.Text = "PLAY";
                     button.AutoSize = true;
-
                     
+
                     button.Click += (s, e) =>
                     {
-                        string[] user = button.AccessibleName.Split(':');
-                        MessageBox.Show($"Kliknuo sam na {user[1]}-ovo PLAY!");
-                        
-                        
+                        playBtn_Click(button.AccessibleName, s, e);
                     };
-                    
+
 
                     //Podesava poziciju strimera koji strimuju
 
@@ -110,6 +123,9 @@ namespace client
                     this.Controls.Add(mylab);
                     this.Controls.Add(button);
 
+                    playButtonList.Add(button);
+                    myLabList.Add(mylab);
+
                     i++;
                     j += 50;
                     counter++;
@@ -125,10 +141,21 @@ namespace client
             }
         }
 
-
-        private void playBtn_Click(object sender, EventArgs e)
+        private void refreshBtn_Click(object sender, EventArgs e)
         {
-            var form3 = new Streamer(stream, username, this);
+            var labelsAndButtons = playButtonList.Zip(myLabList, (b, l) => new { PlayBtn = b, MyLab = l });
+            foreach (var i in labelsAndButtons)
+            {
+                this.Controls.Remove(i.MyLab);
+                this.Controls.Remove(i.PlayBtn);
+            }
+
+            ListAllStreamers();
+        }
+
+        private void playBtn_Click(string streamer, object sender, EventArgs e)
+        {
+            var form3 = new Watcher(stream, username, this, streamer);
             //Form3 krije i pokazuje ovu formu preko ^
             form3.Show();
         }
@@ -136,7 +163,7 @@ namespace client
         private void startStreamBtn_Click(object sender, EventArgs e)
         {
             Regex pattern = new Regex(@"^([1-9][0-9]?|100)$");
-            string maxWatchers = tbMaxWatchers.Text;
+            maxWatchers = tbMaxWatchers.Text;
 
             if(!string.IsNullOrEmpty(maxWatchers) && pattern.IsMatch(maxWatchers))
             {
@@ -150,5 +177,7 @@ namespace client
             }
 
         }
+
+        
     }
 }
