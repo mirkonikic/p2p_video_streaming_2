@@ -30,7 +30,7 @@ namespace client
         Menu forma_parent;
         //Client Array
         public Client[] client_array;
-        public static int max_clients = 256;
+        public static int max_clients;
         public int number_of_clients = 0;
 
         //Listener za klijente
@@ -148,21 +148,23 @@ namespace client
             Title();
 
             //Napravi client array
+            max_clients = Int32.Parse(forma_parent.MaxWatchers);
             client_array = new Client[max_clients];
             nullOutClientArray();
 
             //Pre zapocetog snimanja pozivam novi thread, gde primam zahteve od klijenata i ubacujem ih u niz
-            StreamerConnections sc = new StreamerConnections(this);
+            /*StreamerConnections sc = new StreamerConnections(this);
             Thread tsc = new Thread(sc.run);
-            tsc.Start();
+            tsc.Start();*/
 
             //Otvori UDP Socket i snadji se
 
 
             //Zapocni snimanje
-            capture = new VideoCapture();
+            /*capture = new VideoCapture();
             capture.ImageGrabbed += Cap_ImageGrabbed;
-            capture.Start();
+            capture.Start();*/
+
         }
 
         private void Cap_ImageGrabbed(object sender, EventArgs e)
