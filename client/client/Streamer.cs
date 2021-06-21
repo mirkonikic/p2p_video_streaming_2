@@ -79,6 +79,10 @@ namespace client
 
                     Console.WriteLine(serverInput.Read());
                 }
+                else 
+                {
+                    MessageBox.Show("Uspelo?");
+                }
             }
         }
 
