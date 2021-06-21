@@ -35,6 +35,9 @@ namespace client
             this.label2 = new System.Windows.Forms.Label();
             this.viewLab = new System.Windows.Forms.Label();
             this.logLab = new System.Windows.Forms.Label();
+            this.msgBox = new System.Windows.Forms.RichTextBox();
+            this.tbChat = new System.Windows.Forms.TextBox();
+            this.btChat = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,73 +46,98 @@ namespace client
             this.pbVideo.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pbVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pbVideo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbVideo.Location = new System.Drawing.Point(14, 16);
-            this.pbVideo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.pbVideo.Location = new System.Drawing.Point(12, 12);
             this.pbVideo.Name = "pbVideo";
-            this.pbVideo.Size = new System.Drawing.Size(737, 701);
+            this.pbVideo.Size = new System.Drawing.Size(645, 526);
             this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbVideo.TabIndex = 0;
             this.pbVideo.TabStop = false;
             // 
             // stopBtn
             // 
-            this.stopBtn.Location = new System.Drawing.Point(655, 725);
-            this.stopBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.stopBtn.Location = new System.Drawing.Point(573, 544);
             this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(96, 32);
+            this.stopBtn.Size = new System.Drawing.Size(84, 24);
             this.stopBtn.TabIndex = 1;
-            this.stopBtn.Text = "STOP";
+            this.stopBtn.Text = "stop";
             this.stopBtn.UseVisualStyleBackColor = true;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 725);
+            this.label1.Location = new System.Drawing.Point(12, 544);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 20);
+            this.label1.Size = new System.Drawing.Size(50, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "Viewers:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 757);
+            this.label2.Location = new System.Drawing.Point(12, 568);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 20);
+            this.label2.Size = new System.Drawing.Size(30, 15);
             this.label2.TabIndex = 3;
             this.label2.Text = "Log:";
             // 
             // viewLab
             // 
             this.viewLab.AutoSize = true;
-            this.viewLab.Location = new System.Drawing.Point(78, 725);
+            this.viewLab.Location = new System.Drawing.Point(68, 544);
             this.viewLab.Name = "viewLab";
-            this.viewLab.Size = new System.Drawing.Size(15, 20);
+            this.viewLab.Size = new System.Drawing.Size(12, 15);
             this.viewLab.TabIndex = 4;
             this.viewLab.Text = "/";
             // 
             // logLab
             // 
             this.logLab.AutoSize = true;
-            this.logLab.Location = new System.Drawing.Point(78, 757);
+            this.logLab.Location = new System.Drawing.Point(68, 568);
             this.logLab.Name = "logLab";
-            this.logLab.Size = new System.Drawing.Size(15, 20);
+            this.logLab.Size = new System.Drawing.Size(12, 15);
             this.logLab.TabIndex = 5;
             this.logLab.Text = "/";
             // 
+            // msgBox
+            // 
+            this.msgBox.Location = new System.Drawing.Point(674, 12);
+            this.msgBox.Name = "msgBox";
+            this.msgBox.Size = new System.Drawing.Size(279, 526);
+            this.msgBox.TabIndex = 6;
+            this.msgBox.Text = "";
+            // 
+            // tbChat
+            // 
+            this.tbChat.Location = new System.Drawing.Point(674, 544);
+            this.tbChat.Name = "tbChat";
+            this.tbChat.Size = new System.Drawing.Size(198, 23);
+            this.tbChat.TabIndex = 7;
+            // 
+            // btChat
+            // 
+            this.btChat.Location = new System.Drawing.Point(878, 544);
+            this.btChat.Name = "btChat";
+            this.btChat.Size = new System.Drawing.Size(75, 23);
+            this.btChat.TabIndex = 8;
+            this.btChat.Text = "send";
+            this.btChat.UseVisualStyleBackColor = true;
+            this.btChat.Click += new System.EventHandler(this.btChat_Click);
+            // 
             // Streamer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 793);
+            this.ClientSize = new System.Drawing.Size(965, 595);
+            this.Controls.Add(this.btChat);
+            this.Controls.Add(this.tbChat);
+            this.Controls.Add(this.msgBox);
             this.Controls.Add(this.logLab);
             this.Controls.Add(this.viewLab);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.pbVideo);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Streamer";
             this.Text = "/";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form3_FormClosing);
@@ -128,5 +156,8 @@ namespace client
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label viewLab;
         private System.Windows.Forms.Label logLab;
+        private System.Windows.Forms.RichTextBox msgBox;
+        private System.Windows.Forms.TextBox tbChat;
+        private System.Windows.Forms.Button btChat;
     }
 }

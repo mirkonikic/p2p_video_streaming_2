@@ -8,7 +8,8 @@ namespace client
 {
     class Packet
     {
-        static int HEADER_SIZE = 16; //16 Bytes
+        /*static int HEADER_SIZE = 16; //16 Bytes
+        
         //MOZEMO ILI DA NAPRAVIMO SEQ int STATIC PA DA U KONSTRUKTORU SAMO POVECAVAMO ZA JEDAN
         //ILI DA PRATIMO ODAKLE ZOVEMO OVU KLASU I DA TAMO POVECAVAMO A OVDE SAMO UPISEMO
         int sequence = 0;
@@ -69,6 +70,6 @@ namespace client
         public byte[] createPacket() 
         {
             return null;
-        }
+        }*/
     }
 }

@@ -15,6 +15,7 @@ namespace client
 {
     class Watcher_prototip
     {
+        /*
         string streamer_name = "";
         string streamer_ip = "";
         //Za kontrolnu konekciju
@@ -44,5 +45,6 @@ namespace client
             //moguce da je bolje da ovde otvorimo pictureBox
             //i mislim da je to to
         }
+        */
     }
 }
