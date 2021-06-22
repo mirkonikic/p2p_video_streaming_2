@@ -11,37 +11,50 @@ using System.Threading.Tasks;
 
 namespace client
 {
-    class StreamerConnections
+    class StreamerConnectionsTcp
     {
         Streamer parent;
 
-        public StreamerConnections(Streamer parent)
+        public StreamerConnectionsTcp(Streamer parent)
         {
             this.parent = parent;
         }
 
         //Trazim da mi posalje info
-        public void findInfoAboutClient(TcpClient client) 
+        public void findInfoAboutClient(TcpClient client_socket) 
         {
-            NetworkStream str = client.GetStream();
-            BinaryReader serverInput = new BinaryReader(str);
-            BinaryWriter serverOutput = new BinaryWriter(str);
-            int i;
+            Client client = new Client(client_socket);
+
+            client.str = client_socket.GetStream();
+            client.serverInput = new BinaryReader(client.str);
+            client.serverOutput = new BinaryWriter(client.str);
             string username;
+            string ip_addr;
+            string port;
 
-            //3 pokusaja ima da mi kaze svoje ime, ako ne rip njegova konekcija
-            for (i = 0; i<3; i++) 
+            //1 pokusaj ima da mi kaze svoje ime, ako ne rip njegova konekcija
+            string strm = client.serverInput.ReadString();
+            string[] code_streamers = strm.Split(null);
+            string code = code_streamers[0];
+
+            if (code.Equals("START") && code_streamers.Length == 4)
             {
-                string strm = serverInput.ReadString();
-                string[] code_streamers = strm.Split(null);
-                string code = code_streamers[0];
+                username = code_streamers[1];
+                ip_addr = code_streamers[2];
+                port = code_streamers[3];
 
-                if (code.Equals("DETAILS") && code_streamers.Length == 2) 
-                {
-                    username = code_streamers[1];
-                    parent.createClient(client, username);
-                    break;
-                }
+                client.username = username;
+                client.ip_addr = ip_addr;
+                client.port = Int32.Parse(port);
+
+                parent.createClient(client);
+            }
+            else 
+            {
+                client.serverInput.Close();
+                client.serverOutput.Close();
+                client.str.Close();
+                client_socket.Close();
             }
         }
 
@@ -64,6 +77,7 @@ namespace client
             }
             catch (SocketException ex)
             {
+
                 Console.WriteLine(ex.Message);
             }
         }
