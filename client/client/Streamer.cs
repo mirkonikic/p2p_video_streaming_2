@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using System.Net;
 
 //KLIJENT POSTAJE STREAMER
 //Otvara TcpListener kao kontrolna tcp konekcija
@@ -35,6 +36,7 @@ namespace client
 
         //Listener za klijente
         public TcpListener listener;
+        public UdpClient udpSender;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -174,17 +176,18 @@ namespace client
             nullOutClientArray();
 
             //Pre zapocetog snimanja pozivam novi thread, gde primam zahteve od klijenata i ubacujem ih u niz
-            /*StreamerConnections sc = new StreamerConnections(this);
+            StreamerConnections sc = new StreamerConnections(this);
             Thread tsc = new Thread(sc.run);
-            tsc.Start();*/
+            tsc.Start();
 
             //Otvori UDP Socket i snadji se
-
+            udpSender = new UdpClient(9092);
 
             //Zapocni snimanje
-            /*capture = new VideoCapture();
+            capture = new VideoCapture();
             capture.ImageGrabbed += Cap_ImageGrabbed;
-            capture.Start();*/
+            viewLab.Text = "" + number_of_clients + " " + "viewers";
+            capture.Start();
 
         }
 
@@ -196,9 +199,14 @@ namespace client
                 capture.Retrieve(mat);
 
                 updateNumberOfClients();
-                viewLab.Text = "" + number_of_clients + " " + "viewers";
+                
 
-                //sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                if(number_of_clients != 0)
+                {
+                    byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                    sendToAllClientsUdp(data);
+                }
+          
 
                 //Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
                 //img.Save("file.png", ImageFormat.Png);            450 Kb
@@ -217,21 +225,14 @@ namespace client
             }
         }
 
-        private void sacuvajPosaljiSliku(Bitmap bitmap)
+        public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
         {
-            //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
-            //Bitmap bmp = image.AsBitmap();
-
-            //bmp.Save("slika" + ".jpg");
-            //salje sliku
+            
             byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
             //ENCODE THE BYTE AND INPUT INTO BW
             string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
 
-            //GRESKA JE BILA DA NISAM NI SLAO!!!
-            //bw.Write(zaSlanje);
-            serverOutput.Write(zaSlanje_b64);
-            //label1.Text = zaSlanje_b64.Length.ToString();
+            return Encoding.ASCII.GetBytes(zaSlanje_b64);
         }
 
         public byte[] toByteArray(Image image, ImageFormat format)
@@ -244,6 +245,26 @@ namespace client
             }
         }
 
+        public void sendToAllClientsUdp(byte[] data)
+        {
+            Thread t = new Thread(() => {
+                try
+                {
+                    foreach (var client in client_array)
+                    {
+                        if(client != null)
+                        {
+                            udpSender.Send(data, 1024, client.ip_addr, 4545);
+                        }
+                    }
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            });
+            t.Start();
+        }
 
 
 
@@ -253,11 +274,7 @@ namespace client
         //Treba da posalje svima 'TEXT <text....>' komandu
         //Onda svi dobiju poruku od streamera
 
-        public void sendToAllClientsUdp(Byte[] Data) 
-        {
-            
-        }
-
+        
 
 
 
@@ -300,10 +317,11 @@ namespace client
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            //serverOutput.Write("STOP");
-            //capture.Dispose();
-            //listener.Stop();
-            //forma_parent.Show();
+            serverOutput.Write("STOP");
+            capture.Dispose();
+            listener.Stop();
+            udpSender.Close();
+            forma_parent.Show();
             this.Close();
         }
 
@@ -311,7 +329,8 @@ namespace client
         {
             serverOutput.Write("STOP");
             capture.Dispose();
-            //listener.Stop();
+            listener.Stop();
+            udpSender.Close();
             forma_parent.Show();
         }
 

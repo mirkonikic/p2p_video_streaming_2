@@ -138,20 +138,32 @@ namespace client
                 notFound.Text = "No online streamers found";
                 notFound.Location = new Point(12, notFound.Location.Y + notFound.Height);
                 this.Controls.Add(notFound);
+                myLabList.Add(notFound);
             }
         }
 
         private void refreshBtn_Click(object sender, EventArgs e)
         {
-            var labelsAndButtons = playButtonList.Zip(myLabList, (b, l) => new { PlayBtn = b, MyLab = l });
+            dynamic labelsAndButtons = myLabList;
+            if(playButtonList.Count > 0)
+            {
+                labelsAndButtons = playButtonList.Zip(myLabList, (b, l) => new { PlayBtn = b, MyLab = l });
+            }
             foreach (var i in labelsAndButtons)
             {
-                this.Controls.Remove(i.MyLab);
-                this.Controls.Remove(i.PlayBtn);
+                if(playButtonList.Count > 0)
+                {
+                    this.Controls.Remove(i.MyLab);
+                    this.Controls.Remove(i.PlayBtn);
+                }
+                else
+                {
+                    this.Controls.Remove(i);
+                }
             }
 
             ListAllStreamers();
-        }
+        }   
 
         private void playBtn_Click(string streamer, object sender, EventArgs e)
         {
@@ -173,7 +185,7 @@ namespace client
             }
             else
             {
-                MessageBox.Show("Please enter a maximum number of watchers!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Number of watchers must be between 1 and 100!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
