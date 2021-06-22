@@ -81,6 +81,10 @@ namespace client
 
                     Console.WriteLine(serverInput.Read());
                 }
+                else 
+                {
+                    MessageBox.Show("Uspelo?");
+                }
             }
         }
 
@@ -123,18 +127,35 @@ namespace client
             return -1;
         }
 
-        public void createClient(TcpClient client, string username)
+        public void createClient(Client client)
         {
             //find first free space
             int place = returnFirstFreePlaceInArray();
             if (place == -1)
             {
-                client.Close();
+                client.serverInput.Close();
+                client.serverOutput.Close();
+                client.str.Close();
+                client.socket.Close();
                 return;
             }
 
+            //Upise u log label da je dosao novi vjuer
+            logLab.Text = client.username + " just joined!";
+            number_of_clients++;
+            updateViewersLabel();
+            
             //create client object
-            client_array[place] = new Client(returnClientIpAddress(client), Int32.Parse(returnClientPort(client)), username, place);
+            client_array[place] = client;
+            client.place_id = place;
+            client.parent = this;
+
+            //create clientThread
+            ClientThread client_thread = new ClientThread(client_array[place]);
+            Thread clientThread = new Thread(new ThreadStart(client_thread.Start));           //Creates Thread for -> tracker - client handler - console
+
+            //put it inside client object
+            client_array[place].client_thread = client_thread;
         }
 
         private void Form3_Load(object sender, EventArgs e)
@@ -252,10 +273,6 @@ namespace client
         //NIJE GOTOVO KAD STIGNES ZAVRSI...
         //Treba da posalje svima 'TEXT <text....>' komandu
         //Onda svi dobiju poruku od streamera
-        public void sendToAllClientsTcp(string Data)
-        {
-
-        }
 
         
 
@@ -271,10 +288,27 @@ namespace client
 
 
         //Gotovo i uredjeno
+        public void sendToAllClientsTcp(string Data)
+        {
+            for (int i = 0; i < number_of_clients; i++)
+            {
+                client_array[i].serverOutput.Write(Data);
+            }
+        }
+
+        public void updateMsgBox(string data) 
+        {
+            msgBox.Text += data + "\n";
+        }
 
         public void updateLogLabel(string data) 
         {
             logLab.Text = data;
+        }
+
+        public void updateViewersLabel() 
+        {
+            viewLab.Text = "" + number_of_clients;
         }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
@@ -300,6 +334,37 @@ namespace client
             forma_parent.Show();
         }
 
+        private void sacuvajSliku(Bitmap bitmap)
+        {
+            //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+            //Bitmap bmp = image.AsBitmap();
 
+            //bmp.Save("slika" + ".jpg");
+        }
+
+        public string convertSpacesToUnderlines(string protocol, string data) 
+        {
+            string prep_data = null;
+            string[] split_data = data.Split(null);
+
+            for (int i = 0; i<split_data.Length; i++) 
+            {
+                if (i == (split_data.Length-1))
+                {
+                    prep_data += split_data[i];
+                    break;
+                }
+
+                prep_data += split_data[i] + "_";
+            }
+
+            return protocol + " " + username + " " + prep_data;
+        }
+
+        private void btChat_Click(object sender, EventArgs e)
+        {
+            updateMsgBox(username+": "+tbChat.Text);
+            sendToAllClientsTcp(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
+        }
     }
 }

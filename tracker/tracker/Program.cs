@@ -27,7 +27,7 @@ namespace tracker
                     TcpClient client = listener.AcceptTcpClient();                  //Accepts a new client
                     tracker.createClient(client);                                   //Passes that client to createClient method
                 }
-                catch (Exception) 
+                catch (Exception)
                 {
                     //SHUTTING DOWN
                     tracker.vprint("Ne znam sto ali exception kod listenera");

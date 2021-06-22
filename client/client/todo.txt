@@ -1,6 +1,19 @@
-﻿Sutra:
--Popravi sto se gasi Form2, tcplistener problem
--Probaj da se nakacite na moju ip adresu
+﻿BITNO:
+	
+
+	Client -> 9090 port TRACKER						//KOMANDE i KONTROLA MREZE
+
+	WClient -> 9090 port UDP STREAMER				//FREJMOVI
+	WClient -> 9091 port TCP STREAMER				//START TEXT STOP
+
+	SClient -> ???? port TCP WATCHER				//Zavisi od watchera jer se on kaci na streamera
+	SClient -> Dogovoreni port preko TCP WATCHER	//Dogovoreno preko TCP komande 
+
+
+
+Sutra:
++Popravi sto se gasi Form2, tcplistener problem
++Probaj da se nakacite na moju ip adresu
 -Sredi tcp konekcije i server-watcher protocol
 -Sredi udp multicast group da salje frejmove samo
 
@@ -19,7 +32,6 @@ Kako forme da rasporedimo:
 																	  \
 																     FORM4
 	
-
 	Prosledjujes uvek [USERNAME, STREAM, PRETHODNU_FORMU]
 	-stream da se ne bi izgubila konekcija sa trackerom
 	-prethodnu_formu da bi mogao da je sakrijes i otkrijes kad ugasis child formu
@@ -34,9 +46,14 @@ Kako forme da rasporedimo:
 			Salje mi u formatu: DETAILS <USERNAME>
 			Ja odgovorim: 200 Ok_my_port_is 11000
 
-Protocol izmedju streamera i watchera:
-	- DETAILS <USERNAME>				//Ovo je bitno streameru
-	- TEXT <text...>					//Ovo se upise u chat box
+Protocol od watchera ka strimeru:
+	- START <USERNAME> <IP_ADRESA> <PORT>				//Ovo je bitno streameru
+	- STOP <USERNAME>
+	- TEXT USERNAME <text...>					//Ovo se upise u chat box
+
+Dodatno:
+	- Odgovor strimera ka watcheru brzinu frejmova u sekundi
+
 
 	Sta treba uraditi:
 	+smisliti raspored GUI formi
@@ -60,4 +77,5 @@ Protocol izmedju streamera i watchera:
 		-Update ime/titl strima
 		-Prikazi broj gledalaca
 		-Dodaj popup obavestenja za streamera, ili chat u kom pise kad se neko log onuje
-		-Dodaj lajkove i sortiranje prema istim...
+		-skrin shot kod watchera i strimera
+		-input box za portove kod strimera ako hoce da ih promeni
