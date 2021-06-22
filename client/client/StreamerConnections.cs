@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace client
 {
-    class StreamerConnectionsTcp
+    class StreamerConnections
     {
         Streamer parent;
 
-        public StreamerConnectionsTcp(Streamer parent)
+        public StreamerConnections(Streamer parent)
         {
             this.parent = parent;
         }
