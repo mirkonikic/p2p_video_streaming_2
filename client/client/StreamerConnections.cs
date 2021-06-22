@@ -64,7 +64,6 @@ namespace client
             }
             catch (SocketException ex)
             {
-
                 Console.WriteLine(ex.Message);
             }
         }
