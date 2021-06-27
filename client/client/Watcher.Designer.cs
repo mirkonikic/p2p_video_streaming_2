@@ -30,7 +30,8 @@ namespace client
         private void InitializeComponent()
         {
             this.stopBtn = new System.Windows.Forms.Button();
-            this.tbVideo = new System.Windows.Forms.TextBox();
+            this.pbVideo = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.tbChat = new System.Windows.Forms.TextBox();
             this.btChat = new System.Windows.Forms.Button();
@@ -49,14 +50,14 @@ namespace client
             this.stopBtn.UseVisualStyleBackColor = true;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
-            // tbVideo
+            // pbVideo
             // 
-            this.tbVideo.Location = new System.Drawing.Point(11, 8);
-            this.tbVideo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tbVideo.Multiline = true;
-            this.tbVideo.Name = "tbVideo";
-            this.tbVideo.Size = new System.Drawing.Size(645, 526);
-            this.tbVideo.TabIndex = 2;
+            this.pbVideo.Location = new System.Drawing.Point(11, 8);
+            this.pbVideo.Name = "pbVideo";
+            this.pbVideo.Size = new System.Drawing.Size(645, 526);
+            this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbVideo.TabIndex = 2;
+            this.pbVideo.TabStop = false;
             // 
             // chatBox
             // 
@@ -106,12 +107,12 @@ namespace client
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(965, 595);
+            this.Controls.Add(this.pbVideo);
             this.Controls.Add(this.logLab);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btChat);
             this.Controls.Add(this.tbChat);
             this.Controls.Add(this.chatBox);
-            this.Controls.Add(this.tbVideo);
             this.Controls.Add(this.stopBtn);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -119,14 +120,14 @@ namespace client
             this.Name = "Watcher";
             this.Text = "Watcher";
             this.Load += new System.EventHandler(this.Form4_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.Button stopBtn;
-        private System.Windows.Forms.TextBox tbVideo;
+        private System.Windows.Forms.PictureBox pbVideo;
         private System.Windows.Forms.RichTextBox chatBox;
         private System.Windows.Forms.TextBox tbChat;
         private System.Windows.Forms.Button btChat;

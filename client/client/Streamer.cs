@@ -36,7 +36,10 @@ namespace client
 
         //Listener za klijente
         public TcpListener listener;
-        public UdpClient udpSender;
+
+        public TcpListener videoListener;
+        public NetworkStream videoStream;
+        public BinaryWriter videoOutput;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -139,7 +142,6 @@ namespace client
                 client.socket.Close();
                 return;
             }
-
             
             //create client object
             client_array[place] = client;
@@ -161,6 +163,7 @@ namespace client
             client_array[place].client_thread = client_thread;
         }
 
+       
         private void Form3_Load(object sender, EventArgs e)
         {
             //Streamer treba da:
@@ -183,13 +186,15 @@ namespace client
             Thread tsc = new Thread(sc.run);
             tsc.Start();
 
-            //Otvori UDP Socket i snadji se
-            //udpSender = new UdpClient(9092);
+            VideoConnections vsc = new VideoConnections(this);
+            Thread tvsc = new Thread(vsc.run);
+            tvsc.Start();
 
             //Zapocni snimanje
-            //capture = new VideoCapture();
-            //capture.ImageGrabbed += Cap_ImageGrabbed;
-            //capture.Start();
+            capture = new VideoCapture();
+            capture.ImageGrabbed += Cap_ImageGrabbed;
+            viewLab.Text = "" + number_of_clients + " " + "viewers";
+            capture.Start();
 
         }
 
@@ -200,7 +205,7 @@ namespace client
                 mat = new Mat();
                 capture.Retrieve(mat);                
 
-                if(number_of_clients != 0)
+                if(number_of_clients != 0 && videoStream != null)
                 {
                     byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                     sendToAllClientsUdp(data);
@@ -246,23 +251,8 @@ namespace client
 
         public void sendToAllClientsUdp(byte[] data)
         {
-            Thread t = new Thread(() => {
-                try
-                {
-                    foreach (var client in client_array)
-                    {
-                        if(client != null)
-                        {
-                            udpSender.Send(data, 1024, client.ip_addr, 4545);
-                        }
-                    }
-                }
-                catch (SocketException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            });
-            t.Start();
+            videoOutput.Write(data);
+            videoStream = null;
         }
 
 
@@ -302,12 +292,12 @@ namespace client
 
         public void updateLogLabel(string data) 
         {
-            logLab.Text = data;
+            //logLab.Text = data;
         }
 
         public void updateViewersLabel() 
         {
-            viewLab.Text = "" + number_of_clients;
+            //viewLab.Text = "" + number_of_clients;
         }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
@@ -319,7 +309,7 @@ namespace client
             serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
-            udpSender.Close();
+            videoListener.Stop();
             forma_parent.Show();
             this.Close();
         }
@@ -329,7 +319,7 @@ namespace client
             serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
-            udpSender.Close();
+            videoListener.Stop();
             forma_parent.Show();
         }
 
