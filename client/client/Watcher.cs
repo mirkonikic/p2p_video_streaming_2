@@ -57,27 +57,22 @@ namespace client
             streamerStream = tcpClient.GetStream();
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
-            streamerOutput.Write($"START mirko {tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0]} 4545");
+            //streamerOutput.Write($"START mirko {tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0]} 4545");
 
-            
-            //Mirko kod
             tcpClientVideo = new TcpClient("127.0.0.1", 9092);
             videoStream = tcpClientVideo.GetStream();
             videoInput = new BinaryReader(videoStream);
 
             //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + tcpClientVideo.Client.RemoteEndPoint.ToString().Split(":")[1]);
 
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
             tsc.Start();
 
-            
-            //Igor kod
-            byte[] receivedData = videoInput.ReadBytes(2048);
-            string receivedData_b64 = Encoding.ASCII.GetString(receivedData);
-            byte[] decodedData = Convert.FromBase64String(receivedData_b64);
+            string receivedData = videoInput.ReadString();
+            byte[] decodedData = Convert.FromBase64String(receivedData);
 
             File.WriteAllBytes(@"C:\Users\igorn\source\repos\p2p_video_streaming_2\img\test.png", decodedData);
 
