@@ -29,10 +29,10 @@ namespace client
         //BinaryReader streamerInput;
         BinaryWriter streamerOutput;
 
-        TcpClient tcpClientVideo;
+        TcpListener videoListener;
         NetworkStream videoStream;
         BinaryReader videoInput;
-        BinaryWriter videoOutput;
+        
 
         public Watcher(NetworkStream stream, string username, Menu forma2, string streamer)
         {
@@ -57,22 +57,22 @@ namespace client
             streamerStream = tcpClient.GetStream();
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
-            streamerOutput.Write($"START mirko {tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0]} 4545");
 
-            
-            //Mirko kod
-            tcpClientVideo = new TcpClient("127.0.0.1", 9092);
-            videoStream = tcpClientVideo.GetStream();
-            videoInput = new BinaryReader(videoStream);
+
+            videoListener = new TcpListener(IPAddress.Any, 9092);
+            videoListener.Start();
+            TcpClient videoStreamer;
 
             //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + 9092);
 
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
             tsc.Start();
 
+
+            videoStreamer = videoListener.AcceptTcpClient();
             
             //Igor kod
             byte[] receivedData = videoInput.ReadBytes(2048);
@@ -81,26 +81,6 @@ namespace client
 
             File.WriteAllBytes(@"C:\Users\igorn\source\repos\p2p_video_streaming_2\img\test.png", decodedData);
 
-
-            /*
-            Thread t = new Thread(() =>
-            {
-                udpReceiver = new UdpClient(4545);
-                var remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                //udpReceiver.Client.ReceiveBufferSize = int.MaxValue;
-                try
-                {
-                    byte[] receivedData = udpReceiver.Receive(ref remoteEndPoint);
-                    string message = Encoding.ASCII.GetString(receivedData);
-                    tbVideo.Text = message;
-                }
-                catch (SocketException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            });
-            t.Start();
-            */
         }
 
         public void updateLogLab(string data) 
@@ -121,9 +101,8 @@ namespace client
 
             tcpClient.Close();
 
-            tcpClientVideo.Close();
+            
             videoStream.Close();
-            videoOutput.Close();
 
             forma_parent.Show();
             this.Close();
@@ -135,9 +114,7 @@ namespace client
             streamerOutput.Write("STOP " + username);
 
             tcpClient.Close();
-            tcpClientVideo.Close();
-            videoStream.Close();
-            videoOutput.Close();
+            
 
             forma_parent.Show();
         }

@@ -14,6 +14,9 @@ namespace client
         public BinaryReader serverInput;
         public BinaryWriter serverOutput;
 
+        public NetworkStream videoStr;
+        public BinaryWriter videoOutput;
+
         public ClientThread client_thread = null;
         public Streamer parent;
         public int place_id { get; set; }
@@ -21,6 +24,8 @@ namespace client
         public string ip_addr { get; set; }
         public string username { get; set; }
         public TcpClient socket { get; set; }
+
+        public TcpClient videoSocket { get; set; }
         public Client(Streamer parent, int place_id, int port, string ip_addr, string username, TcpClient socket) 
         {
             this.parent = parent;
@@ -29,6 +34,7 @@ namespace client
             this.ip_addr = ip_addr;
             this.username = username;
             this.socket = socket;
+            this.videoSocket = socket;
         }
 
         public Client(TcpClient socket) 

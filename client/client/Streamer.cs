@@ -37,9 +37,6 @@ namespace client
         //Listener za klijente
         public TcpListener listener;
 
-        public TcpListener videoListener;
-        public NetworkStream videoStream;
-        public BinaryWriter videoOutput;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -186,10 +183,6 @@ namespace client
             Thread tsc = new Thread(sc.run);
             tsc.Start();
 
-            VideoConnections vsc = new VideoConnections(this);
-            Thread tvsc = new Thread(vsc.run);
-            tvsc.Start();
-
             //Zapocni snimanje
             capture = new VideoCapture();
             capture.ImageGrabbed += Cap_ImageGrabbed;
@@ -205,7 +198,7 @@ namespace client
                 mat = new Mat();
                 capture.Retrieve(mat);                
 
-                if(number_of_clients != 0 && videoStream != null)
+                if(number_of_clients != 0)
                 {
                     byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                     sendToAllClientsUdp(data);
@@ -251,8 +244,7 @@ namespace client
 
         public void sendToAllClientsUdp(byte[] data)
         {
-            videoOutput.Write(data);
-            videoStream = null;
+            
         }
 
 
@@ -309,7 +301,6 @@ namespace client
             serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
-            videoListener.Stop();
             forma_parent.Show();
             this.Close();
         }
@@ -319,7 +310,6 @@ namespace client
             serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
-            videoListener.Stop();
             forma_parent.Show();
         }
 
