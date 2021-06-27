@@ -24,9 +24,9 @@ namespace client
         BinaryWriter serverOutput;
 
         UdpClient udpReceiver;
-        TcpClient tcpClient;
+        public TcpClient tcpClient;
         NetworkStream streamerStream;
-        BinaryReader streamerInput;
+        //BinaryReader streamerInput;
         BinaryWriter streamerOutput;
 
         public Watcher(NetworkStream stream, string username, Menu forma2, string streamer)
@@ -45,13 +45,23 @@ namespace client
 
         private void Form4_Load(object sender, EventArgs e)
         {
+            //Ovde prvo treba da trazi od trackera da dobije ip adresu, a port je uvek 9091
+            //Onda otvori TCP konekciju sa streamerom i da mu udp info, pa zapocinje recieve
             tcpClient = new TcpClient("127.0.0.1", 9091);
             streamerStream = tcpClient.GetStream();
-            streamerInput = new BinaryReader(streamerStream);
+            //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
-            streamerOutput.Write("DETAILS mirko");
+            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
 
+            //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
+            WatcherConnections wc = new WatcherConnections(this);
+            Thread tsc = new Thread(wc.run);
+            tsc.Start();
+
+            
+            /*
             Thread t = new Thread(() =>
             {
                 udpReceiver = new UdpClient(4545);
@@ -69,21 +79,64 @@ namespace client
                 }
             });
             t.Start();
+            */
+        }
+
+        public void updateLogLab(string data) 
+        {
+            logLab.Text = data;
+        }
+
+        public void updateChatBox(string data) 
+        {
+            chatBox.Text += data + "\n";
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
+            //Saljem streameru da gasim watching
+            streamerOutput.Write("STOP " + username);
+
             tcpClient.Close();
-            udpReceiver.Close();
+            //udpReceiver.Close();
             forma_parent.Show();
             this.Close();
         }
 
         private void Form4_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //POSALJI TCPCLIENTU DA GASIS STRIM
+            streamerOutput.Write("STOP " + username);
+
             tcpClient.Close();
-            udpReceiver.Close();
+            //udpReceiver.Close();
             forma_parent.Show();
+        }
+
+        public string convertSpacesToUnderlines(string protocol, string data)
+        {
+            string prep_data = null;
+            string[] split_data = data.Split(null);
+
+            for (int i = 0; i < split_data.Length; i++)
+            {
+                if (i == (split_data.Length - 1))
+                {
+                    prep_data += split_data[i];
+                    break;
+                }
+
+                prep_data += split_data[i] + "_";
+            }
+
+            return protocol + " " + prep_data;
+        }
+
+        private void btChat_Click(object sender, EventArgs e)
+        {
+            //POSALJI KAO TEXT <USERNAME> <TEXT IZ TEXTBOXA>
+            updateChatBox(username + ": " + tbChat.Text);
+            streamerOutput.Write(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
         }
     }
 }
