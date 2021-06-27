@@ -94,18 +94,23 @@ namespace client
             //Posalji parentu da upise u text box
             //NEK SA WATCHER STRANE BUDE UMESTO SPACE - DONJA CRTA
 
-            //TEXT USERNAME <tekst_sa_donjim_crtama>
+            //TEXT <tekst_sa_donjim_crtama>
             string[] parsed_line = line.Split(null);
-            string[] parsed_words = parsed_line[2].Split("_");
+            string[] parsed_words = parsed_line[1].Split("_");
 
             //Saljem u for petlju da mi vrati recenicu od parsovanih reci
             string sentence = returnSentence(parsed_words);
 
-            client.parent.updateMsgBox(client.username + ": " + sentence);
+            client.parent.updateMsgBox(sentence);
 
             //PROSLEDI OSTALIM CLIENTIMA 
             //Posto mi je klijent slao - TEXT USERNAME tekst_sa_donjim_crtama
-            client.parent.sendToAllClientsTcp("TEXT " + client.username + " " + parsed_line[1]);
+            //ALI POSTO STREAMER ZNA KOJI MU JE KLIJENT POSLAO, NE MORA DA SE SALJE USERNAME U TEXT KOMANDI
+            //pa sam odlucio da to izbacim :)
+            //Naci sad kad prosledjuje drugima moze samo da upise odmah u tekst_sa_donjim_crtama sledece
+            //TEXT mirko:_kako_ste i znace se ko je poslao poruku...
+            //client.parent.sendToAllClientsTcp("TEXT " + " " + parsed_line[1]);
+            client.parent.sendToAllClientsTcp(line);
 
             return 200;
         }

@@ -14,7 +14,7 @@
 Sutra:
 +Popravi sto se gasi Form2, tcplistener problem
 +Probaj da se nakacite na moju ip adresu
--Sredi tcp konekcije i server-watcher protocol
+-Zavrsi tcp konekcije i server-watcher protocol
 -Sredi udp multicast group da salje frejmove samo
 
 Kako forme da rasporedimo:
@@ -47,13 +47,13 @@ Kako forme da rasporedimo:
 			Ja odgovorim: 200 Ok_my_port_is 11000
 
 Protocol od watchera ka strimeru:
-	- START <USERNAME> <IP_ADRESA> <PORT>				//Ovo je bitno streameru
-	- STOP <USERNAME>
-	- TEXT USERNAME <text...>					//Ovo se upise u chat box
+	+ START <USERNAME> <IP_ADRESA> <PORT>				//Ovo je bitno streameru
+	 STOP <USERNAME>
+	- TEXT <text...>					//Ovo se upise u chat box
 
 Dodatno:
 	- Odgovor strimera ka watcheru brzinu frejmova u sekundi
-
+	- OK ...
 
 	Sta treba uraditi:
 	+smisliti raspored GUI formi
@@ -79,3 +79,5 @@ Dodatno:
 		-Dodaj popup obavestenja za streamera, ili chat u kom pise kad se neko log onuje
 		-skrin shot kod watchera i strimera
 		-input box za portove kod strimera ako hoce da ih promeni
+		-screenshare umesto webcam choose dodaj
+		-AutoScroll na RichTextBox - ChatBox
