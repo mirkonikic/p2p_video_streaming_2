@@ -140,19 +140,22 @@ namespace client
                 return;
             }
 
-            //Upise u log label da je dosao novi vjuer
-            logLab.Text = client.username + " just joined!";
-            number_of_clients++;
-            updateViewersLabel();
             
             //create client object
             client_array[place] = client;
             client.place_id = place;
             client.parent = this;
 
+            //Upise u log label da je dosao novi vjuer
+            logLab.Text = client.username + " just joined!";
+            updateNumberOfClients();
+            updateViewersLabel();
+            updateMsgBox(client.username + " just joined!");
+
             //create clientThread
             ClientThread client_thread = new ClientThread(client_array[place]);
-            Thread clientThread = new Thread(new ThreadStart(client_thread.Start));           //Creates Thread for -> tracker - client handler - console
+            Thread clientThread = new Thread(client_thread.Start);           //Creates Thread for -> tracker - client handler - console
+            clientThread.Start();
 
             //put it inside client object
             client_array[place].client_thread = client_thread;
@@ -181,13 +184,12 @@ namespace client
             tsc.Start();
 
             //Otvori UDP Socket i snadji se
-            udpSender = new UdpClient(9092);
+            //udpSender = new UdpClient(9092);
 
             //Zapocni snimanje
-            capture = new VideoCapture();
-            capture.ImageGrabbed += Cap_ImageGrabbed;
-            viewLab.Text = "" + number_of_clients + " " + "viewers";
-            capture.Start();
+            //capture = new VideoCapture();
+            //capture.ImageGrabbed += Cap_ImageGrabbed;
+            //capture.Start();
 
         }
 
@@ -196,10 +198,7 @@ namespace client
             try
             {
                 mat = new Mat();
-                capture.Retrieve(mat);
-
-                updateNumberOfClients();
-                
+                capture.Retrieve(mat);                
 
                 if(number_of_clients != 0)
                 {
@@ -358,7 +357,7 @@ namespace client
                 prep_data += split_data[i] + "_";
             }
 
-            return protocol + " " + username + " " + prep_data;
+            return protocol + " " + prep_data;
         }
 
         private void btChat_Click(object sender, EventArgs e)

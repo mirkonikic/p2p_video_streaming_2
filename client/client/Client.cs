@@ -45,9 +45,8 @@ namespace client
             //i postavljam da nista vise ne pokazuje na ovaj objekat, pa ga pokupi garbage collector
             parent.client_array[place_id] = null;
             //na streamer metodi smanjujem broj watchera za jedan
-            parent.number_of_clients--;
-            parent.updateViewersLabel();
             parent.updateNumberOfClients();
+            parent.updateViewersLabel();
             //apdejtujem log label da se diskonektovao
             parent.updateLogLabel(username + " disconnected!");
         }
