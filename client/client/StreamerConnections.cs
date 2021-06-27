@@ -47,6 +47,10 @@ namespace client
                 client.ip_addr = ip_addr;
                 client.port = Int32.Parse(port);
 
+                client.videoSocket = new TcpClient(client.ip_addr, client.port);
+                client.videoStr = client.videoSocket.GetStream();
+                client.videoOutput = new BinaryWriter(client.videoStr);
+
                 parent.createClient(client);
             }
             else 
