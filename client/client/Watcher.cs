@@ -23,11 +23,15 @@ namespace client
         BinaryReader serverInput;
         BinaryWriter serverOutput;
 
-        UdpClient udpReceiver;
         TcpClient tcpClient;
         NetworkStream streamerStream;
         BinaryReader streamerInput;
         BinaryWriter streamerOutput;
+
+        TcpClient tcpClientVideo;
+        NetworkStream videoStream;
+        BinaryReader videoInput;
+        BinaryWriter videoOutput;
 
         public Watcher(NetworkStream stream, string username, Menu forma2, string streamer)
         {
@@ -45,36 +49,31 @@ namespace client
 
         private void Form4_Load(object sender, EventArgs e)
         {
+
             tcpClient = new TcpClient("127.0.0.1", 9091);
             streamerStream = tcpClient.GetStream();
             streamerInput = new BinaryReader(streamerStream);
             streamerOutput = new BinaryWriter(streamerStream);
+            streamerOutput.Write($"START mirko {tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0]} 4545");
 
-            streamerOutput.Write("DETAILS mirko");
 
-            Thread t = new Thread(() =>
-            {
-                udpReceiver = new UdpClient(4545);
-                var remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                //udpReceiver.Client.ReceiveBufferSize = int.MaxValue;
-                try
-                {
-                    byte[] receivedData = udpReceiver.Receive(ref remoteEndPoint);
-                    string message = Encoding.ASCII.GetString(receivedData);
-                    tbVideo.Text = message;
-                }
-                catch (SocketException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            });
-            t.Start();
+            tcpClientVideo = new TcpClient("127.0.0.1", 9092);
+            videoStream = tcpClientVideo.GetStream();
+            videoInput = new BinaryReader(videoStream);
+
+            byte[] receivedData = videoInput.ReadBytes(2048);
+            string receivedData_b64 = Encoding.ASCII.GetString(receivedData);
+            byte[] decodedData = Convert.FromBase64String(receivedData_b64);
+
+            File.WriteAllBytes(@"C:\Users\igorn\source\repos\p2p_video_streaming_2\img\test.png", decodedData);
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
             tcpClient.Close();
-            udpReceiver.Close();
+            tcpClientVideo.Close();
+            videoStream.Close();
+            videoOutput.Close();
             forma_parent.Show();
             this.Close();
         }
@@ -82,7 +81,9 @@ namespace client
         private void Form4_FormClosing(object sender, FormClosingEventArgs e)
         {
             tcpClient.Close();
-            udpReceiver.Close();
+            tcpClientVideo.Close();
+            videoStream.Close();
+            videoOutput.Close();
             forma_parent.Show();
         }
     }

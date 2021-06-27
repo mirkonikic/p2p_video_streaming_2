@@ -3,7 +3,7 @@
 
 	Client -> 9090 port TRACKER						//KOMANDE i KONTROLA MREZE
 
-	WClient -> 9090 port UDP STREAMER				//FREJMOVI
+	WClient -> 9092 port UDP STREAMER				//FREJMOVI
 	WClient -> 9091 port TCP STREAMER				//START TEXT STOP
 
 	SClient -> ???? port TCP WATCHER				//Zavisi od watchera jer se on kaci na streamera

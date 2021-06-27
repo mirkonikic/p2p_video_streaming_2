@@ -30,7 +30,8 @@ namespace client
         private void InitializeComponent()
         {
             this.stopBtn = new System.Windows.Forms.Button();
-            this.tbVideo = new System.Windows.Forms.TextBox();
+            this.pbVideo = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.SuspendLayout();
             // 
             // stopBtn
@@ -43,13 +44,14 @@ namespace client
             this.stopBtn.UseVisualStyleBackColor = true;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
-            // tbVideo
+            // pbVideo
             // 
-            this.tbVideo.Location = new System.Drawing.Point(13, 11);
-            this.tbVideo.Multiline = true;
-            this.tbVideo.Name = "tbVideo";
-            this.tbVideo.Size = new System.Drawing.Size(815, 399);
-            this.tbVideo.TabIndex = 2;
+            this.pbVideo.Location = new System.Drawing.Point(7, 8);
+            this.pbVideo.Name = "pbVideo";
+            this.pbVideo.Size = new System.Drawing.Size(821, 424);
+            this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbVideo.TabIndex = 2;
+            this.pbVideo.TabStop = false;
             // 
             // Watcher
             // 
@@ -57,18 +59,18 @@ namespace client
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(835, 506);
-            this.Controls.Add(this.tbVideo);
+            this.Controls.Add(this.pbVideo);
             this.Controls.Add(this.stopBtn);
             this.Name = "Watcher";
             this.Text = "Watcher";
             this.Load += new System.EventHandler(this.Form4_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.Button stopBtn;
-        private System.Windows.Forms.TextBox tbVideo;
+        private System.Windows.Forms.PictureBox pbVideo;
     }
 }
