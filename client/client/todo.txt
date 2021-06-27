@@ -19,10 +19,10 @@ Sutra:
 
 Kako forme da rasporedimo:
 	
-	Kad se jos nije ulogovao:                              FORM1
-												"logovanje"  |
-															 |
-														   FORM2
+	Kad se jos nije ulogovao:                               FORM1
+												"logovanje"   |
+															  |
+														    FORM2
 															/   \
 														   /     \
 														  /       \

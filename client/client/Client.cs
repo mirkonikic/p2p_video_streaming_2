@@ -14,6 +14,8 @@ namespace client
         public BinaryReader serverInput;
         public BinaryWriter serverOutput;
 
+        public BinaryWriter videoOutput;
+
         public ClientThread client_thread = null;
         public Streamer parent;
         public int place_id { get; set; }
