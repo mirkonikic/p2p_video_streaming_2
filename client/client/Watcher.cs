@@ -58,7 +58,6 @@ namespace client
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
-
             videoListener = new TcpListener(IPAddress.Any, 9092);
             videoListener.Start();
             TcpClient videoStreamer;
@@ -71,13 +70,10 @@ namespace client
             Thread tsc = new Thread(wc.run);
             tsc.Start();
 
-
             videoStreamer = videoListener.AcceptTcpClient();
             
-            //Igor kod
-            byte[] receivedData = videoInput.ReadBytes(2048);
-            string receivedData_b64 = Encoding.ASCII.GetString(receivedData);
-            byte[] decodedData = Convert.FromBase64String(receivedData_b64);
+            string receivedData = videoInput.ReadString();
+            byte[] decodedData = Convert.FromBase64String(receivedData);
 
             File.WriteAllBytes(@"C:\Users\igorn\source\repos\p2p_video_streaming_2\img\test.png", decodedData);
 

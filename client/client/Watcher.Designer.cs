@@ -31,12 +31,12 @@ namespace client
         {
             this.stopBtn = new System.Windows.Forms.Button();
             this.pbVideo = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.tbChat = new System.Windows.Forms.TextBox();
             this.btChat = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.logLab = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.SuspendLayout();
             // 
             // stopBtn
@@ -52,6 +52,7 @@ namespace client
             // 
             // pbVideo
             // 
+            this.pbVideo.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pbVideo.Location = new System.Drawing.Point(11, 8);
             this.pbVideo.Name = "pbVideo";
             this.pbVideo.Size = new System.Drawing.Size(645, 526);
@@ -122,6 +123,7 @@ namespace client
             this.Load += new System.EventHandler(this.Form4_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

@@ -200,7 +200,8 @@ namespace client
 
                 if(number_of_clients != 0)
                 {
-                    byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                    //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                    string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                     sendToAllClientsUdp(data);
                 }
           
@@ -222,14 +223,16 @@ namespace client
             }
         }
 
-        public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
+        //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
+        public string sacuvajPosaljiSliku(Bitmap bitmap)
         {
             
             byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
             //ENCODE THE BYTE AND INPUT INTO BW
             string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
 
-            return Encoding.ASCII.GetBytes(zaSlanje_b64);
+            return zaSlanje_b64;
+            //return Encoding.ASCII.GetBytes(zaSlanje_b64);
         }
 
         public byte[] toByteArray(Image image, ImageFormat format)
@@ -242,9 +245,15 @@ namespace client
             }
         }
 
-        public void sendToAllClientsUdp(byte[] data)
+        public void sendToAllClientsUdp(string data)//byte[] data)
         {
-            
+
+            for (int i = 0; i < number_of_clients; i++)
+            {
+                client_array[i].videoOutput.Write(data);
+            }
+            //videoOutput.Write(data);
+            //videoStream = null;
         }
 
 
