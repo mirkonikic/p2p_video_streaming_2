@@ -32,7 +32,8 @@ namespace client
         TcpListener videoListener;
         NetworkStream videoStream;
         BinaryReader videoInput;
-        
+
+        public bool isRunning = true;
 
         public Watcher(NetworkStream stream, string username, Menu forma2, string streamer)
         {
@@ -70,13 +71,31 @@ namespace client
             Thread tsc = new Thread(wc.run);
             tsc.Start();
 
+            //Inicijalizuje socket
             videoStreamer = videoListener.AcceptTcpClient();
-            
+            videoStream = videoStreamer.GetStream();
+            videoInput = new BinaryReader(videoStream);
+
+            //Cuva samo jednu sliku
+            /*KOmentarisem da ako pogresim mozemo da vratimo
             string receivedData = videoInput.ReadString();
+            //updateChatBox(receivedData);
             byte[] decodedData = Convert.FromBase64String(receivedData);
 
-            File.WriteAllBytes(@"C:\Users\igorn\source\repos\p2p_video_streaming_2\img\test.png", decodedData);
+            //Sacuvaj jednu sliku samo u bin/Debug/net-50/test.png
+            File.WriteAllBytes(@"test.png", decodedData);
+            */
 
+            //Ovo mozda u drugi thread
+            //Jer gusi ovu nit
+            RecievingFrames rf = new RecievingFrames(this, videoInput);
+            Thread pf = new Thread(rf.run); //pf - prijem frejmova
+            pf.Start();
+        }
+
+        public void updatePictureBox(Image img) 
+        {
+            pbVideo.Image = img;
         }
 
         public void updateLogLab(string data) 
@@ -93,6 +112,7 @@ namespace client
         private void stopBtn_Click(object sender, EventArgs e)
         {
             //Saljem streameru da gasim watching
+            isRunning = false;
             streamerOutput.Write("STOP " + username);
 
             tcpClient.Close();
@@ -108,6 +128,8 @@ namespace client
         {
             //POSALJI TCPCLIENTU DA GASIS STRIM
             streamerOutput.Write("STOP " + username);
+
+            isRunning = false;
 
             tcpClient.Close();
             
