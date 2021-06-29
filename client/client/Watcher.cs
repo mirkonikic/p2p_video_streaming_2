@@ -59,12 +59,13 @@ namespace client
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
-            videoListener = new TcpListener(IPAddress.Any, 9092);
+            videoListener = new TcpListener(IPAddress.Any, 0);
             videoListener.Start();
             TcpClient videoStreamer;
+  
 
             //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + 9092);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
 
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
