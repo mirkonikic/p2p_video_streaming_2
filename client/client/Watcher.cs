@@ -76,7 +76,7 @@ namespace client
             streamerOutput = new BinaryWriter(streamerStream);
 
             //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + 9092);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
 
             videoListener = new TcpListener(IPAddress.Any, 0);
 
@@ -85,9 +85,7 @@ namespace client
   
 
 
-            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
-
+            
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
