@@ -30,6 +30,8 @@ namespace tracker
         public void Start()
         {
             vprint("client " + client.socket.Client.RemoteEndPoint.ToString() + " just connnected!" + isRunning);
+            vprint("client " + client.socket.Client.LocalEndPoint.ToString() + " just connnected!" + isRunning);
+
             n = client.socket.GetStream();
             bw = new BinaryWriter(n);
             br = new BinaryReader(n);
@@ -344,10 +346,12 @@ namespace tracker
                     {
                         streamers_list += ';';
                     }
+                    vprint(streamers_list);
                 }
 
                 //bw.Write(streamers_list);
                 response200 = streamers_list;
+                vprint(response200);
                 return streamers_list.Equals("") ? 408 : 201;
             }
 
@@ -435,6 +439,8 @@ namespace tracker
 
             //RESI OVO -> KAKO POSLATI RETURN STRIMER INFO
             //return streamer.Split(null)[1];
+            response200 = "" + returnFromDatabase(0, client.streamer_kog_gleda, "user.dat").Split(null)[2];
+            vprint(response200);
             return 200;
         }
 

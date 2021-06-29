@@ -54,19 +54,38 @@ namespace client
 
             //Ovde prvo treba da trazi od trackera da dobije ip adresu, a port je uvek 9091
             //Onda otvori TCP konekciju sa streamerom i da mu udp info, pa zapocinje recieve
-            tcpClient = new TcpClient("127.0.0.1", 9091);
+            serverOutput.Write($"WTCH {streamer}");
+            string response = serverInput.ReadString();
+            string[] parsed_response = response.Split(null);
+
+            string ip_addr = "127.0.0.1";
+
+            if (parsed_response[0] == "200")
+            {
+                ip_addr = parsed_response[1];
+            }
+            else 
+            {
+                this.Close();
+            }
+
+
+            tcpClient = new TcpClient(ip_addr, 9091);
             streamerStream = tcpClient.GetStream();
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
+            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
+
             videoListener = new TcpListener(IPAddress.Any, 0);
+
             videoListener.Start();
             TcpClient videoStreamer;
   
 
-            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
 
+            
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
