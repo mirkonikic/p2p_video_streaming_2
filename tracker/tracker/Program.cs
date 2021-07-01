@@ -11,7 +11,7 @@ namespace tracker
         static void Main(string[] args)
         {
             //TCP LISTENER STARTS
-            TcpListener listener = new TcpListener(IPAddress.Any, 9090);
+            TcpListener listener = new TcpListener(IPAddress.Any, 3946);
             listener.Start();
 
             //TRACKER
