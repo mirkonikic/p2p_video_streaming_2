@@ -18,7 +18,7 @@ namespace client
     {
         Menu forma_parent;
         NetworkStream stream;
-        string username;
+        public string username;
         string streamer;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
@@ -27,7 +27,7 @@ namespace client
 
         NetworkStream streamerStream;
         //BinaryReader streamerInput;
-        BinaryWriter streamerOutput;
+        public BinaryWriter streamerOutput;
 
         TcpListener videoListener;
         NetworkStream videoStream;
@@ -75,17 +75,17 @@ namespace client
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
-            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
+            
 
             videoListener = new TcpListener(IPAddress.Any, 0);
 
             videoListener.Start();
             TcpClient videoStreamer;
-  
+
+            //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
 
 
-            
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
@@ -129,30 +129,41 @@ namespace client
 
         }
 
-        private void stopBtn_Click(object sender, EventArgs e)
+        public void stopBtn_Click(object sender, EventArgs e)
         {
             //Saljem streameru da gasim watching
-            isRunning = false;
+            /*isRunning = false;
+
+            serverOutput.Write("STOP");
+            string status = serverInput.ReadString();
+
             streamerOutput.Write("STOP " + username);
 
             tcpClient.Close();
 
-            
-            videoStream.Close();
+            videoListener.Stop();
 
-            forma_parent.Show();
+            forma_parent.Show();*/
             this.Close();
         }
 
         private void Form4_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //POSALJI TCPCLIENTU DA GASIS STRIM
-            streamerOutput.Write("STOP " + username);
-
             isRunning = false;
 
+            serverOutput.Write("STOP");
+            string status = serverInput.ReadString();
+
+            //POSALJI TCPCLIENTU DA GASIS STRIM
+            if(streamerOutput != null)
+            {
+                streamerOutput.Write("STOP " + username);
+            }
+
+
             tcpClient.Close();
-            
+
+            videoListener.Stop();
 
             forma_parent.Show();
         }
@@ -179,7 +190,8 @@ namespace client
         private void btChat_Click(object sender, EventArgs e)
         {
             //POSALJI KAO TEXT <USERNAME> <TEXT IZ TEXTBOXA>
-            updateChatBox(username + ": " + tbChat.Text);
+            if(username != "debug")
+                updateChatBox(username + ": " + tbChat.Text);
             streamerOutput.Write(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
         }
     }

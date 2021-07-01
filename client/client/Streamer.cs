@@ -40,7 +40,7 @@ namespace client
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
-        string username;
+        public string username;
         BinaryReader serverInput;
         BinaryWriter serverOutput;
 
@@ -81,7 +81,7 @@ namespace client
 
                     Console.WriteLine(serverInput.Read());
                 }
-                else 
+                else
                 {
                     MessageBox.Show("Uspelo?");
                 }
@@ -112,7 +112,9 @@ namespace client
             {
                 client_array[i] = null;
             }
-            updateLogLabel("Nulled out the client array");
+
+            if(username != "debug")
+                updateLogLabel("Nulled out the client array");
         }
 
         public int returnFirstFreePlaceInArray()
@@ -146,10 +148,16 @@ namespace client
             client.parent = this;
 
             //Upise u log label da je dosao novi vjuer
-            logLab.Text = client.username + " just joined!";
+            if(username != "debug")
+                logLab.Text = client.username + " just joined!";
+
             updateNumberOfClients();
-            updateViewersLabel();
-            updateMsgBox(client.username + " just joined!");
+
+            if(username != "debug")
+                updateViewersLabel();
+
+            if(username != "debug")
+                updateMsgBox(client.username + " just joined!");
 
             //create clientThread
             ClientThread client_thread = new ClientThread(client_array[place]);
@@ -186,7 +194,6 @@ namespace client
             //Zapocni snimanje
             capture = new VideoCapture();
             capture.ImageGrabbed += Cap_ImageGrabbed;
-            viewLab.Text = "" + number_of_clients + " " + "viewers";
             capture.Start();
 
         }
@@ -196,9 +203,12 @@ namespace client
             try
             {
                 mat = new Mat();
-                capture.Retrieve(mat);                
+                capture.Retrieve(mat);
+                
+                if(username != "debug")
+                    viewLab.Text = "" + number_of_clients + " " + "viewers";
 
-                if(number_of_clients != 0)
+                if (number_of_clients != 0)
                 {
                     //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                     string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
@@ -293,12 +303,12 @@ namespace client
 
         public void updateLogLabel(string data) 
         {
-            //logLab.Text = data;
+            logLab.Text = data;
         }
 
         public void updateViewersLabel() 
         {
-            //viewLab.Text = "" + number_of_clients;
+            viewLab.Text = "" + number_of_clients;
         }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
@@ -307,10 +317,10 @@ namespace client
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            serverOutput.Write("STOP");
+            /*serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
-            forma_parent.Show();
+            forma_parent.Show();*/
             this.Close();
         }
 
@@ -319,6 +329,7 @@ namespace client
             serverOutput.Write("STOP");
             capture.Dispose();
             listener.Stop();
+            sendToAllClientsTcp("STOP");
             forma_parent.Show();
         }
 
@@ -351,7 +362,9 @@ namespace client
 
         private void btChat_Click(object sender, EventArgs e)
         {
-            updateMsgBox(username+": "+tbChat.Text);
+            if(username != "debug")
+                updateMsgBox(username+": "+tbChat.Text);
+
             sendToAllClientsTcp(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
         }
     }
