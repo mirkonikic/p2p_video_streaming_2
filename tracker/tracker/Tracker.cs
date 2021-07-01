@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -18,6 +19,9 @@ namespace tracker
         TcpListener main_listener;
 
         public string path = Directory.GetCurrentDirectory();
+
+        //Trackerova Ip adresa
+        public string tracker_ip = "127.0.0.1";
 
         public Tracker(TcpListener main_listener)
         {
@@ -164,6 +168,37 @@ namespace tracker
             Thread.Sleep(200);
             Console.WriteLine("                            -Igor Mirko\n");
             Console.ForegroundColor = ConsoleColor.White;
+
+            //Console.WriteLine("=>" + GetLocalIPAddress());   //pokusaj da ispisem trakerovu ip adresu
+
+            string localIP;
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                localIP = endPoint.Address.ToString();
+            }
+
+            tracker_ip = localIP;
+
+            Console.WriteLine("Tracker running on:         " + tracker_ip);
+        }
+
+        //Ovo je bila funkcija za IP adrese interfejsa
+        public static string GetLocalIPAddress()
+        {
+            Console.WriteLine(Dns.GetHostName());
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            Console.WriteLine(host);
+            foreach (var ip in host.AddressList)
+            {
+                Console.WriteLine(ip);
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         public void tparseEcho(string line) 

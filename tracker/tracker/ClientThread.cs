@@ -439,7 +439,28 @@ namespace tracker
 
             //RESI OVO -> KAKO POSLATI RETURN STRIMER INFO
             //return streamer.Split(null)[1];
-            response200 = "" + returnFromDatabase(0, client.streamer_kog_gleda, "user.dat").Split(null)[2];
+
+            //UPOREDI IP ADRESU DA ZNAS KOJU DA VRATIS
+            string ret_ip_addr = returnFromDatabase(0, client.streamer_kog_gleda, "user.dat").Split(null)[2];
+
+            if (ret_ip_addr.Equals("127.0.0.1"))    //ako je ip adresa sa istog kompjutera kao tracker
+            {
+                //vrati trackerovu ip adresu
+                //jer ako posalje 127.0.0.1 onda ce watcher traziti streamera na svom kompjuteru
+                
+                ret_ip_addr = client.tracker.tracker_ip;
+            }
+            else if (ret_ip_addr.Equals(client.ip_address)) //ako je ip adresa sa istog kompjutera kao od streamera
+            {
+                //vrati 127.0.0.1 da bi trazio na tom kompu
+                ret_ip_addr = "127.0.0.1";
+            }
+            else 
+            {
+                //nista samo posalji ip adresu
+            }
+
+            response200 = ret_ip_addr;
             vprint(response200);
             return 200;
         }
