@@ -19,12 +19,12 @@ namespace client
         BinaryReader br;
         BinaryWriter bw;
 
-        bool isRunning = true;
+        //bool isRunning = true;
 
         public WatcherConnections(Watcher parent) 
         {
             this.parent = parent;
-            isRunning = true;
+            //isRunning = true;
         }
 
         public string parse(string data) 
@@ -43,25 +43,41 @@ namespace client
 
         public void run() 
         {
-            ns = parent.tcpClient.GetStream();
-            br = new BinaryReader(ns);
-            string read = br.ReadString();
-
-            //while petlja koja prima samo i ispisuje u ChatTextBox
-            while (isRunning) 
+            try
             {
-                string[] parsed_read = read.Split(null);
-                if (parsed_read[0].Equals("TEXT") && parsed_read.Length == 2) 
-                {
-                    //PRIMIO SAM: TEXT mirko:_ima_nekoga?_o.o
-                    parent.updateChatBox(parse(read));
-                }
-                else 
-                {
-                    parent.updateLogLab(read);
-                }
+                ns = parent.tcpClient.GetStream();
+                br = new BinaryReader(ns);
+                string read = br.ReadString();
 
-                read = br.ReadString();
+
+                //while petlja koja prima samo i ispisuje u ChatTextBox
+                while (parent.isRunning)
+                {
+                    string[] parsed_read = read.Split(null);
+                    if (parsed_read[0].Equals("TEXT") && parsed_read.Length == 2)
+                    {
+                        //PRIMIO SAM: TEXT mirko:_ima_nekoga?_o.o
+                        if (parent.username != "debug")
+                            parent.updateChatBox(parse(read));
+                    }
+                    else if (parsed_read[0].Equals("STOP"))
+                    {
+                        parent.streamerOutput = null;
+                        parent.Close();
+                    }
+                    else
+                    {
+                        if (parent.username != "debug")
+                            parent.updateLogLab(read);
+                    }
+
+                    read = br.ReadString();
+                }
+            }
+            catch (Exception)
+            {
+                br.Close();
+                ns.Close();
             }
         }
     }

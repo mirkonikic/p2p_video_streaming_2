@@ -500,6 +500,8 @@ namespace tracker
                 deleteFromDb(0, client.name, client.streamer_kog_gleda + ".dat");
                 client.streamer_kog_gleda = null;
 
+                client.role = "x";
+
                 return 200;
             }
             else if (client.role.Equals("s"))
