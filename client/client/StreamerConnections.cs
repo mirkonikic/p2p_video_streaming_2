@@ -47,7 +47,8 @@ namespace client
                 client.ip_addr = ip_addr;
                 client.port = Int32.Parse(port);
 
-                parent.updateMsgBox(strm);
+                if(parent.username != "debug")
+                    parent.updateMsgBox(strm);
 
                 client.videoSocket = new TcpClient(client.ip_addr, client.port);
                 client.videoStr = client.videoSocket.GetStream();
