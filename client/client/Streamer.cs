@@ -214,6 +214,8 @@ namespace client
                 mat = new Mat();
                 capture.Retrieve(mat);
 
+                Image slika = vratiKompresovanuSliku();
+
                 //RESIZE
 
                 if (username != "debug")
@@ -223,7 +225,10 @@ namespace client
                 {
                     //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                     //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
-                    string data = sacuvajPosaljiSliku();
+
+                    //ODVOJI KOMPRESOVANJE SLIKE I PREBACIVANJE U BAJTOVE U RAZLICITE METODE
+                    ////string data = sacuvajPosaljiSliku();
+                    string data = enkodujSliku(slika);
                     sendToAllClientsUdp(data);
                 }
 
@@ -233,9 +238,9 @@ namespace client
                 //img.Save("file.bmp", ImageFormat.Bmp);            1   Mb
                 //BOLJA KOMPRESIJA JE PNG
 
-                Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
-                //sacuvajSliku(img);
-                pbVideo.Image = img;
+                //Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
+                ////sacuvajSliku(img);
+                pbVideo.Image = slika;
 
             }
             catch (Exception ex)
@@ -254,21 +259,47 @@ namespace client
             }
         }
 
+        //Prvi deo koda iz SacuvajPosaljiSliku metode
+        public Image vratiKompresovanuSliku() 
+        {
+            Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+            Bitmap bmp = image.AsBitmap();
+            Image slika_posle_2_kompresije;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bmp.Save(ms, ImageFormat.Jpeg);
+                slika_posle_2_kompresije = ShrinkImage(Image.FromStream(ms), scale);
+            }
+
+            return slika_posle_2_kompresije;
+        }
+
+        public string enkodujSliku(Image img) 
+        {
+            byte[] zaSlanje;        //byte array koji ce sadrzati bajtove slike
+            zaSlanje = toByteArray(img, ImageFormat.Jpeg);      //izvuce bajtove iz prosledjene slike i kompresuje jos jednom po Jpeg kompresiji
+
+            string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);     //prevede u base64
+
+            return zaSlanje_b64;
+        }
+
         //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
         public string sacuvajPosaljiSliku()//Bitmap bitmap)
         {
             Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
             Bitmap bmp = image.AsBitmap();
             byte[] zaSlanje;
-            
+
             using (MemoryStream ms = new MemoryStream())
             {
                 bmp.Save(ms, ImageFormat.Jpeg);
                 //image.Save("trebaDaPosaljem.bmp", format);
                 
-                Image slika_posle_1_kompresije = ShrinkImage(Image.FromStream(ms), scale);
+                Image slika_posle_2_kompresije = ShrinkImage(Image.FromStream(ms), scale);
                 //zaSlanje =  ms.ToArray();
-                zaSlanje = toByteArray(slika_posle_1_kompresije, ImageFormat.Jpeg);
+                zaSlanje = toByteArray(slika_posle_2_kompresije, ImageFormat.Jpeg);
             }
             
             
