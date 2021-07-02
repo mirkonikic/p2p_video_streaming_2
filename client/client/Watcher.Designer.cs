@@ -48,7 +48,6 @@ namespace client
             this.stopBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.stopBtn.ForeColor = System.Drawing.Color.White;
             this.stopBtn.Location = new System.Drawing.Point(655, 725);
-            //this.stopBtn.Location = new System.Drawing.Point(573, 544);
             this.stopBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.stopBtn.Name = "stopBtn";
             this.stopBtn.Size = new System.Drawing.Size(84, 24);
@@ -84,7 +83,7 @@ namespace client
             // 
             // btChat
             // 
-            this.btChat.Location = new System.Drawing.Point(878, 543);
+            this.btChat.Location = new System.Drawing.Point(878, 544);
             this.btChat.Name = "btChat";
             this.btChat.Size = new System.Drawing.Size(75, 23);
             this.btChat.TabIndex = 5;
@@ -111,7 +110,7 @@ namespace client
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(484, 544);
+            this.button1.Location = new System.Drawing.Point(573, 544);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(83, 24);
             this.button1.TabIndex = 8;

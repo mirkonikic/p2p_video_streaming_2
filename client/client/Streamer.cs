@@ -333,7 +333,7 @@ namespace client
             {
                 if (client_array[i] != null)
                 {
-                    client_array[i].serverOutput.Write(data);
+                    client_array[i].serverOutput.Write(Data);
                 }
             }
         }
