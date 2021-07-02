@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Drawing.Drawing2D;
 
 //KLIJENT POSTAJE STREAMER
 //Otvara TcpListener kao kontrolna tcp konekcija
@@ -258,20 +259,40 @@ namespace client
             Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
             Bitmap bmp = image.AsBitmap();
             byte[] zaSlanje;
-
+            
             using (MemoryStream ms = new MemoryStream())
             {
                 bmp.Save(ms, ImageFormat.Jpeg);
                 //image.Save("trebaDaPosaljem.bmp", format);
-                zaSlanje =  ms.ToArray();
+                
+                Image slika_posle_1_kompresije = ShrinkImage(Image.FromStream(ms), 2);
+                //zaSlanje =  ms.ToArray();
+                zaSlanje = toByteArray(slika_posle_1_kompresije, ImageFormat.Jpeg);
             }
-
+            
+            
             //byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
             //ENCODE THE BYTE AND INPUT INTO BW
             string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
 
             return zaSlanje_b64;
             //return Encoding.ASCII.GetBytes(zaSlanje_b64);
+        }
+
+        public static Image ShrinkImage(Image original, int scale)
+        {
+            Bitmap bmp = new Bitmap(original.Width / scale, original.Height / scale,
+                                    original.PixelFormat);
+            using (Graphics G = Graphics.FromImage(bmp))
+            {
+                G.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                G.SmoothingMode = SmoothingMode.HighQuality;
+                Rectangle srcRect = new Rectangle(0, 0, original.Width, original.Height);
+                Rectangle destRect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                G.DrawImage(original, destRect, srcRect, GraphicsUnit.Pixel);
+                bmp.SetResolution(original.HorizontalResolution, original.VerticalResolution);
+            }
+            return (Image)bmp;
         }
 
         private void sacuvajSliku()//Bitmap bitmap)
