@@ -38,6 +38,7 @@ namespace client
         //Listener za klijente
         public TcpListener listener;
 
+        int scale = 1;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -265,7 +266,7 @@ namespace client
                 bmp.Save(ms, ImageFormat.Jpeg);
                 //image.Save("trebaDaPosaljem.bmp", format);
                 
-                Image slika_posle_1_kompresije = ShrinkImage(Image.FromStream(ms), 2);
+                Image slika_posle_1_kompresije = ShrinkImage(Image.FromStream(ms), scale);
                 //zaSlanje =  ms.ToArray();
                 zaSlanje = toByteArray(slika_posle_1_kompresije, ImageFormat.Jpeg);
             }
@@ -437,7 +438,8 @@ namespace client
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness ,hScrollBar1.Value);
+            scale = hScrollBar1.Value;
+            //capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness ,hScrollBar1.Value);
         }
     }
 }

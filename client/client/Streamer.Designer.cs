@@ -144,12 +144,14 @@ namespace client
             // 
             // hScrollBar1
             // 
+            this.hScrollBar1.LargeChange = 1;
             this.hScrollBar1.Location = new System.Drawing.Point(674, 573);
-            this.hScrollBar1.Maximum = 30;
-            this.hScrollBar1.Minimum = -30;
+            this.hScrollBar1.Maximum = 10;
+            this.hScrollBar1.Minimum = 1;
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.Size = new System.Drawing.Size(198, 18);
             this.hScrollBar1.TabIndex = 10;
+            this.hScrollBar1.Value = 1;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // label3
@@ -157,9 +159,9 @@ namespace client
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(878, 573);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 15);
+            this.label3.Size = new System.Drawing.Size(78, 15);
             this.label3.TabIndex = 11;
-            this.label3.Text = "brightness:";
+            this.label3.Text = ":compression";
             // 
             // Streamer
             // 
