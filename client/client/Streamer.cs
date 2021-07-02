@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Drawing.Drawing2D;
 
 //KLIJENT POSTAJE STREAMER
 //Otvara TcpListener kao kontrolna tcp konekcija
@@ -37,6 +38,7 @@ namespace client
         //Listener za klijente
         public TcpListener listener;
 
+        int scale = 1;
 
         //Socketi za razgovor sa trackerom
         NetworkStream stream;
@@ -212,17 +214,30 @@ namespace client
                 mat = new Mat();
                 capture.Retrieve(mat);
 
+                Image slika = vratiKompresovanuSliku();
+
                 //RESIZE
 
                 if (username != "debug")
                     viewLab.Text = "" + number_of_clients + " " + "viewers";
 
-                if (number_of_clients != 0)
+                
+                //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+
+                //ODVOJI KOMPRESOVANJE SLIKE I PREBACIVANJE U BAJTOVE U RAZLICITE METODE
+                ////string data = sacuvajPosaljiSliku();
+                string data = enkodujSliku(slika);
+                //PROVERI DAL JE DATA VECI OD 65535B i ako jeste prikazi warning da mora da poveca kompresiju
+                if (data.Length <= 65535)
                 {
-                    //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
-                    //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
-                    string data = sacuvajPosaljiSliku();
-                    sendToAllClientsUdp(data);
+                    if (number_of_clients != 0)
+                        sendToAllClientsUdp(data);
+                    pbVideo.Image = slika;
+                }
+                else
+                {
+                    pbVideo.Image = Image.FromFile("CompressionWarning.png");
                 }
 
 
@@ -231,9 +246,9 @@ namespace client
                 //img.Save("file.bmp", ImageFormat.Bmp);            1   Mb
                 //BOLJA KOMPRESIJA JE PNG
 
-                Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
-                //sacuvajSliku(img);
-                pbVideo.Image = img;
+                //Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
+                ////sacuvajSliku(img);
+                //pbVideo.Image = slika;
 
             }
             catch (Exception ex)
@@ -252,6 +267,33 @@ namespace client
             }
         }
 
+        //Prvi deo koda iz SacuvajPosaljiSliku metode
+        public Image vratiKompresovanuSliku() 
+        {
+            Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+            Bitmap bmp = image.AsBitmap();
+            Image slika_posle_2_kompresije;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bmp.Save(ms, ImageFormat.Jpeg);
+                slika_posle_2_kompresije = ShrinkImage(Image.FromStream(ms), scale);
+            }
+
+            return slika_posle_2_kompresije;
+        }
+
+        public string enkodujSliku(Image img) 
+        {
+            byte[] zaSlanje;        //byte array koji ce sadrzati bajtove slike
+            zaSlanje = toByteArray(img, ImageFormat.Jpeg);      //izvuce bajtove iz prosledjene slike i kompresuje jos jednom po Jpeg kompresiji
+
+            string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);     //prevede u base64
+
+            return zaSlanje_b64;
+        }
+
+        /*
         //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
         public string sacuvajPosaljiSliku()//Bitmap bitmap)
         {
@@ -263,15 +305,36 @@ namespace client
             {
                 bmp.Save(ms, ImageFormat.Jpeg);
                 //image.Save("trebaDaPosaljem.bmp", format);
-                zaSlanje =  ms.ToArray();
+                
+                Image slika_posle_2_kompresije = ShrinkImage(Image.FromStream(ms), scale);
+                //zaSlanje =  ms.ToArray();
+                zaSlanje = toByteArray(slika_posle_2_kompresije, ImageFormat.Jpeg);
             }
-
+            
+            
             //byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
             //ENCODE THE BYTE AND INPUT INTO BW
             string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
 
             return zaSlanje_b64;
             //return Encoding.ASCII.GetBytes(zaSlanje_b64);
+        }
+        */
+
+        public static Image ShrinkImage(Image original, int scale)
+        {
+            Bitmap bmp = new Bitmap((original.Width * 2) / scale, (original.Height * 2) / scale,
+                                    original.PixelFormat);
+            using (Graphics G = Graphics.FromImage(bmp))
+            {
+                G.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                G.SmoothingMode = SmoothingMode.HighQuality;
+                Rectangle srcRect = new Rectangle(0, 0, original.Width, original.Height);
+                Rectangle destRect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                G.DrawImage(original, destRect, srcRect, GraphicsUnit.Pixel);
+                bmp.SetResolution(original.HorizontalResolution, original.VerticalResolution);
+            }
+            return (Image)bmp;
         }
 
         private void sacuvajSliku()//Bitmap bitmap)
@@ -447,7 +510,8 @@ namespace client
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness ,hScrollBar1.Value);
+            scale = hScrollBar1.Value;
+            //capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness ,hScrollBar1.Value);
         }
     }
 }

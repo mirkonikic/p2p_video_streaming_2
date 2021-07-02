@@ -29,7 +29,6 @@ namespace client
         /// </summary>
         private void InitializeComponent()
         {
-            this.stopBtn = new System.Windows.Forms.Button();
             this.pbVideo = new System.Windows.Forms.PictureBox();
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.tbChat = new System.Windows.Forms.TextBox();
@@ -39,21 +38,9 @@ namespace client
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.viewLab = new System.Windows.Forms.Label();
+            this.stopBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.SuspendLayout();
-            // 
-            // stopBtn
-            // 
-            this.stopBtn.BackColor = System.Drawing.Color.Red;
-            this.stopBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.stopBtn.ForeColor = System.Drawing.Color.White;
-            this.stopBtn.Location = new System.Drawing.Point(749, 967);
-            this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(96, 32);
-            this.stopBtn.TabIndex = 1;
-            this.stopBtn.Text = "stop";
-            this.stopBtn.UseVisualStyleBackColor = false;
-            this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
             // pbVideo
             // 
@@ -113,8 +100,7 @@ namespace client
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(655, 722);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button1.Location = new System.Drawing.Point(484, 544);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(95, 32);
             this.button1.TabIndex = 8;
@@ -139,12 +125,23 @@ namespace client
             this.viewLab.Size = new System.Drawing.Size(0, 20);
             this.viewLab.TabIndex = 10;
             // 
+            // stopBtn
+            // 
+            this.stopBtn.Location = new System.Drawing.Point(573, 544);
+            this.stopBtn.Name = "stopBtn";
+            this.stopBtn.Size = new System.Drawing.Size(83, 23);
+            this.stopBtn.TabIndex = 11;
+            this.stopBtn.Text = "stop";
+            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
+            // 
             // Watcher
             // 
             this.AccessibleName = "tbData";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1103, 793);
+            this.ClientSize = new System.Drawing.Size(965, 595);
+            this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.viewLab);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button1);
@@ -154,7 +151,6 @@ namespace client
             this.Controls.Add(this.btChat);
             this.Controls.Add(this.tbChat);
             this.Controls.Add(this.chatBox);
-            this.Controls.Add(this.stopBtn);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Watcher";
@@ -168,7 +164,6 @@ namespace client
         }
 
         #endregion
-        private System.Windows.Forms.Button stopBtn;
         private System.Windows.Forms.PictureBox pbVideo;
         private System.Windows.Forms.RichTextBox chatBox;
         private System.Windows.Forms.TextBox tbChat;
@@ -179,5 +174,6 @@ namespace client
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label viewLab;
+        private System.Windows.Forms.Button stopBtn;
     }
 }
