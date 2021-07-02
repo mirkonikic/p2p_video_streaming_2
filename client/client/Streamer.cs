@@ -113,8 +113,7 @@ namespace client
                 client_array[i] = null;
             }
 
-            if(username != "debug")
-                updateLogLabel("Nulled out the client array");
+            updateLogLabel("Nulled out the client array");
         }
 
         public int returnFirstFreePlaceInArray()
@@ -153,15 +152,13 @@ namespace client
 
             updateNumberOfClients();
 
-            if(username != "debug")
-                updateViewersLabel();
+            updateViewersLabel();
 
-            if (username != "debug")
-            {
-                updateMsgBox(client.username + " just joined!");
-                sendToAllClientsTcp("JOIN " + client.username);
-            }
-
+            
+            updateMsgBox(client.username + " just joined!");
+            sendToAllClientsTcp("JOIN " + client.username, client.username);    //Napisi ostalim klijentima da se prikacio nov
+            client.serverOutput.Write("VIEW " + number_of_clients);             //Napisi novom klijentu koliko postoji gledalaca na ovom strimu
+            
             //create clientThread
             ClientThread client_thread = new ClientThread(client_array[place]);
             Thread clientThread = new Thread(client_thread.Start);           //Creates Thread for -> tracker - client handler - console
@@ -337,17 +334,20 @@ namespace client
 
         public void updateMsgBox(string data) 
         {
-            msgBox.Text += data + "\n";
+            if(!username.Equals("debug"))
+                msgBox.Text += data + "\n";
         }
 
         public void updateLogLabel(string data) 
         {
-            logLab.Text = data;
+            if (!username.Equals("debug"))
+                logLab.Text = data;
         }
 
         public void updateViewersLabel() 
         {
-            viewLab.Text = "" + number_of_clients;
+            if (!username.Equals("debug"))
+                viewLab.Text = "" + number_of_clients;
         }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
