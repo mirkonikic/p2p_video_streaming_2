@@ -221,15 +221,23 @@ namespace client
                 if (username != "debug")
                     viewLab.Text = "" + number_of_clients + " " + "viewers";
 
-                if (number_of_clients != 0)
-                {
-                    //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
-                    //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                
+                //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
 
-                    //ODVOJI KOMPRESOVANJE SLIKE I PREBACIVANJE U BAJTOVE U RAZLICITE METODE
-                    ////string data = sacuvajPosaljiSliku();
-                    string data = enkodujSliku(slika);
-                    sendToAllClientsUdp(data);
+                //ODVOJI KOMPRESOVANJE SLIKE I PREBACIVANJE U BAJTOVE U RAZLICITE METODE
+                ////string data = sacuvajPosaljiSliku();
+                string data = enkodujSliku(slika);
+                //PROVERI DAL JE DATA VECI OD 65535B i ako jeste prikazi warning da mora da poveca kompresiju
+                if (data.Length <= 65535)
+                {
+                    if (number_of_clients != 0)
+                        sendToAllClientsUdp(data);
+                    pbVideo.Image = slika;
+                }
+                else
+                {
+                    pbVideo.Image = Image.FromFile("CompressionWarning.png");
                 }
 
 
@@ -240,7 +248,7 @@ namespace client
 
                 //Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
                 ////sacuvajSliku(img);
-                pbVideo.Image = slika;
+                //pbVideo.Image = slika;
 
             }
             catch (Exception ex)
@@ -285,6 +293,7 @@ namespace client
             return zaSlanje_b64;
         }
 
+        /*
         //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
         public string sacuvajPosaljiSliku()//Bitmap bitmap)
         {
@@ -310,10 +319,11 @@ namespace client
             return zaSlanje_b64;
             //return Encoding.ASCII.GetBytes(zaSlanje_b64);
         }
+        */
 
         public static Image ShrinkImage(Image original, int scale)
         {
-            Bitmap bmp = new Bitmap(original.Width / scale, original.Height / scale,
+            Bitmap bmp = new Bitmap((original.Width * 2) / scale, (original.Height * 2) / scale,
                                     original.PixelFormat);
             using (Graphics G = Graphics.FromImage(bmp))
             {
