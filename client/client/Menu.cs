@@ -99,6 +99,9 @@ namespace client
                     button.AccessibleName = $"{info[0]}";
                     button.Text = "PLAY";
                     button.AutoSize = true;
+                    button.BackColor = Color.Green;
+                    button.ForeColor = Color.White;
+                    button.FlatStyle = FlatStyle.Flat;
                     
 
                     button.Click += (s, e) =>
@@ -144,7 +147,7 @@ namespace client
 
         private void refreshBtn_Click(object sender, EventArgs e)
         {
-            dynamic labelsAndButtons = myLabList;
+            /*dynamic labelsAndButtons = myLabList;
             if(playButtonList.Count > 0)
             {
                 labelsAndButtons = playButtonList.Zip(myLabList, (b, l) => new { PlayBtn = b, MyLab = l });
@@ -160,6 +163,16 @@ namespace client
                 {
                     this.Controls.Remove(i);
                 }
+            }*/
+
+            foreach(var l in myLabList)
+            {
+                this.Controls.Remove(l);
+            }
+
+            foreach (var b in playButtonList)
+            {
+                this.Controls.Remove(b);
             }
 
             ListAllStreamers();

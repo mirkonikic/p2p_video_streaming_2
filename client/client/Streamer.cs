@@ -260,7 +260,10 @@ namespace client
 
             for (int i = 0; i < number_of_clients; i++)
             {
-                client_array[i].videoOutput.Write(data);
+                if (client_array[i] != null)
+                {
+                    client_array[i].videoOutput.Write(data);
+                }
             }
             //videoOutput.Write(data);
             //videoStream = null;
@@ -288,11 +291,14 @@ namespace client
 
 
         //Gotovo i uredjeno
-        public void sendToAllClientsTcp(string Data)
+        public void sendToAllClientsTcp(string data)
         {
             for (int i = 0; i < number_of_clients; i++)
             {
-                client_array[i].serverOutput.Write(Data);
+                if (client_array[i] != null)
+                {
+                    client_array[i].serverOutput.Write(data);
+                }
             }
         }
 

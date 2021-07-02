@@ -46,79 +46,88 @@ namespace client
             this.pbVideo.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pbVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pbVideo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbVideo.Location = new System.Drawing.Point(12, 12);
+            this.pbVideo.Location = new System.Drawing.Point(14, 16);
+            this.pbVideo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pbVideo.Name = "pbVideo";
-            this.pbVideo.Size = new System.Drawing.Size(645, 526);
+            this.pbVideo.Size = new System.Drawing.Size(737, 701);
             this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbVideo.TabIndex = 0;
             this.pbVideo.TabStop = false;
             // 
             // stopBtn
             // 
-            this.stopBtn.Location = new System.Drawing.Point(573, 544);
+            this.stopBtn.BackColor = System.Drawing.Color.Red;
+            this.stopBtn.FlatAppearance.BorderSize = 0;
+            this.stopBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stopBtn.ForeColor = System.Drawing.Color.White;
+            this.stopBtn.Location = new System.Drawing.Point(655, 725);
+            this.stopBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(84, 24);
+            this.stopBtn.Size = new System.Drawing.Size(96, 32);
             this.stopBtn.TabIndex = 1;
             this.stopBtn.Text = "stop";
-            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.UseVisualStyleBackColor = false;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 544);
+            this.label1.Location = new System.Drawing.Point(14, 725);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 15);
+            this.label1.Size = new System.Drawing.Size(63, 20);
             this.label1.TabIndex = 2;
             this.label1.Text = "Viewers:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 568);
+            this.label2.Location = new System.Drawing.Point(14, 757);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 15);
+            this.label2.Size = new System.Drawing.Size(37, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Log:";
             // 
             // viewLab
             // 
             this.viewLab.AutoSize = true;
-            this.viewLab.Location = new System.Drawing.Point(68, 544);
+            this.viewLab.Location = new System.Drawing.Point(78, 725);
             this.viewLab.Name = "viewLab";
-            this.viewLab.Size = new System.Drawing.Size(12, 15);
+            this.viewLab.Size = new System.Drawing.Size(15, 20);
             this.viewLab.TabIndex = 4;
             this.viewLab.Text = "/";
             // 
             // logLab
             // 
             this.logLab.AutoSize = true;
-            this.logLab.Location = new System.Drawing.Point(68, 568);
+            this.logLab.Location = new System.Drawing.Point(78, 757);
             this.logLab.Name = "logLab";
-            this.logLab.Size = new System.Drawing.Size(12, 15);
+            this.logLab.Size = new System.Drawing.Size(15, 20);
             this.logLab.TabIndex = 5;
             this.logLab.Text = "/";
             // 
             // msgBox
             // 
-            this.msgBox.Location = new System.Drawing.Point(674, 12);
+            this.msgBox.Location = new System.Drawing.Point(770, 16);
+            this.msgBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.msgBox.Name = "msgBox";
-            this.msgBox.Size = new System.Drawing.Size(279, 526);
+            this.msgBox.Size = new System.Drawing.Size(318, 700);
             this.msgBox.TabIndex = 6;
             this.msgBox.Text = "";
             // 
             // tbChat
             // 
-            this.tbChat.Location = new System.Drawing.Point(674, 544);
+            this.tbChat.Location = new System.Drawing.Point(770, 725);
+            this.tbChat.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tbChat.Name = "tbChat";
-            this.tbChat.Size = new System.Drawing.Size(198, 23);
+            this.tbChat.Size = new System.Drawing.Size(226, 27);
             this.tbChat.TabIndex = 7;
             // 
             // btChat
             // 
-            this.btChat.Location = new System.Drawing.Point(878, 544);
+            this.btChat.Location = new System.Drawing.Point(1003, 725);
+            this.btChat.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btChat.Name = "btChat";
-            this.btChat.Size = new System.Drawing.Size(75, 23);
+            this.btChat.Size = new System.Drawing.Size(86, 31);
             this.btChat.TabIndex = 8;
             this.btChat.Text = "send";
             this.btChat.UseVisualStyleBackColor = true;
@@ -126,9 +135,9 @@ namespace client
             // 
             // Streamer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 595);
+            this.ClientSize = new System.Drawing.Size(1103, 793);
             this.Controls.Add(this.btChat);
             this.Controls.Add(this.tbChat);
             this.Controls.Add(this.msgBox);
@@ -138,6 +147,7 @@ namespace client
             this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.pbVideo);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Streamer";
             this.Text = "/";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form3_FormClosing);

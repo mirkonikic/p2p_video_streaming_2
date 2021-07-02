@@ -52,9 +52,13 @@ namespace client
             parent.client_array[place_id] = null;
             //na streamer metodi smanjujem broj watchera za jedan
             parent.updateNumberOfClients();
-            parent.updateViewersLabel();
+
+            if(parent.username != "debug")
+                parent.updateViewersLabel();
+
             //apdejtujem log label da se diskonektovao
-            parent.updateLogLabel(username + " disconnected!");
+            if(parent.username != "debug")
+                parent.updateLogLabel(username + " disconnected!");
         }
     }
 }
