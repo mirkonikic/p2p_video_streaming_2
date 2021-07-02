@@ -180,6 +180,7 @@ namespace client
             this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.pbVideo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Streamer";
             this.Text = "/";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form3_FormClosing);
