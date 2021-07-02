@@ -82,10 +82,10 @@ namespace client
             // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(93, 293);
+            this.btnLogin.Location = new System.Drawing.Point(12, 293);
             this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(91, 34);
+            this.btnLogin.Size = new System.Drawing.Size(87, 27);
             this.btnLogin.TabIndex = 4;
             this.btnLogin.Text = "login";
             this.btnLogin.UseVisualStyleBackColor = true;
