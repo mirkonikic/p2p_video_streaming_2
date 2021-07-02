@@ -284,7 +284,7 @@ namespace client
 
         public void sendToAllClientsUdp(string data)//byte[] data)
         {
-
+            
             for (int i = 0; i < number_of_clients; i++)
             {
                 if (client_array[i] != null)
@@ -292,6 +292,19 @@ namespace client
                     client_array[i].videoOutput.Write(data);
                 }
             }
+
+            /*
+            for (int i = 0; i < number_of_clients; i++)
+            {
+                if (client_array[i] == null)
+                {
+                    client_array[i] = client_array[i + 1];
+                    i--;
+                    continue;
+                }
+                client_array[i].videoOutput.Write(data);
+            }*/
+
             //videoOutput.Write(data);
             //videoStream = null;
         }
@@ -322,20 +335,38 @@ namespace client
         {
             for (int i = 0; i < number_of_clients; i++)
             {
-                if(!client_array[i].username.Equals(username))
-                    client_array[i].serverOutput.Write(Data);
-            }
-        }
-
-        public void sendToAllClientsTcp(string Data)
-        {
-            for (int i = 0; i < number_of_clients; i++)
-            {
-                if (client_array[i] != null)
+                if (client_array[i] != null && !client_array[i].username.Equals(username))
                 {
                     client_array[i].serverOutput.Write(Data);
                 }
             }
+            /*for (int i = 0; i < number_of_clients; i++)
+            {
+                if (client_array[i] == null)
+                {
+                    client_array[i] = client_array[i + 1];
+                    i--;
+                    continue;
+                }
+
+                if (!client_array[i].username.Equals(username))
+                    client_array[i].serverOutput.Write(Data);
+            }*/
+        }
+
+        public void sendToAllClientsTcp(string Data)
+        {
+            /*
+            for (int i = 0; i < number_of_clients; i++)
+            {
+                if (client_array[i] == null)
+                {
+                    client_array[i] = client_array[i + 1];
+                    i--;
+                    continue;
+                }
+                client_array[i].serverOutput.Write(Data);
+            }*/
         }
 
         public void updateMsgBox(string data) 
