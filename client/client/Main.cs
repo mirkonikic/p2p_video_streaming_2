@@ -77,7 +77,7 @@ namespace client
             string ip_address = "127.0.0.1";
             int port = 9090;
 
-            
+
 
             //Proveri dal su polja prazna i ako nisu uporedi ih sa regexom
             //Ako jesu umesto praznih ubaci default
@@ -94,14 +94,14 @@ namespace client
                 {
                     port = Int16.Parse(port_input);
                 }
-                else 
+                else
                 {
                     MessageBox.Show("Port number should consist only of numbers and should not exceed 65535", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
             //Proverava ip address
-            if (!String.IsNullOrEmpty(tbIpAddress.Text)) 
+            if (!String.IsNullOrEmpty(tbIpAddress.Text))
             {
                 //REGEX za ip adresu
                 String ip_addr_input = tbIpAddress.Text;
@@ -111,7 +111,7 @@ namespace client
                 //Proveri dal je ip addressa dobro unesena
                 if (ip_rgx.IsMatch(ip_addr_input))
                 {
-                    MessageBox.Show("Match", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //MessageBox.Show("Match", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     ip_address = ip_addr_input;
                 }
                 else
@@ -134,41 +134,44 @@ namespace client
             }
 
             //Zapocne konekciju sa trakerom
-            client = new TcpClient(ip_address, port);
-            stream = client.GetStream();
-            serverInput = new BinaryReader(stream);
-            serverOutput = new BinaryWriter(stream);
-            //Sada imamo serverInput za podataka od trackera i output za slanje ka trackeru
-
-            //Sacuva pass i usernm i loguje se
-            string username = tbUsername.Text;
-            //string password = tbPassword.Text;
-
-            //Kreira komandu koju salje
-            string message = "USER " + username + " " + tbPassword.Text;
-            serverOutput.Write(message);
-
-            //Primi od servera response
-            string inputMessage = serverInput.ReadString();
-            string[] inputSplit = inputMessage.Split(null);
-            string code = inputSplit[0];
-
-            //Ako je 200, dobro izvrsen zahtev
-            if (code == "200")
+            try
             {
-                //Ako je tacno pozovi formu 2 i prosledi socket i username
-                this.Hide();
-                var form2 = new Menu(stream, username);
-                form2.Closed += (s, args) => this.Close();
-                form2.Show();
+                client = new TcpClient(ip_address, port);
+                stream = client.GetStream();
+                serverInput = new BinaryReader(stream);
+                serverOutput = new BinaryWriter(stream);
+                //Sada imamo serverInput za podataka od trackera i output za slanje ka trackeru
 
-                serverOutput.Flush();
+                //Sacuva pass i usernm i loguje se
+                string username = tbUsername.Text;
+                //string password = tbPassword.Text;
+
+                //Kreira komandu koju salje
+                string message = "USER " + username + " " + tbPassword.Text;
+                serverOutput.Write(message);
+
+                //Primi od servera response
+                string inputMessage = serverInput.ReadString();
+                string[] inputSplit = inputMessage.Split(null);
+                string code = inputSplit[0];
+
+                //Ako je 200, dobro izvrsen zahtev
+                if (code == "200")
+                {
+                    //Ako je tacno pozovi formu 2 i prosledi socket i username
+                    this.Hide();
+                    var form2 = new Menu(stream, username);
+                    form2.Closed += (s, args) => this.Close();
+                    form2.Show();
+
+                    serverOutput.Flush();
+                }
             }
-
+            catch (Exception) 
+            {
+                MessageBox.Show("Host on that Ip address/Port isnt active", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
-
-        
     }
-
 }
 
