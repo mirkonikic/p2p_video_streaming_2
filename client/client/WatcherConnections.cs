@@ -42,6 +42,16 @@ namespace client
             return sentence;
         }
 
+        public string parse_join(string data)
+        {
+            return data + " just joined!";
+        }
+
+        public string parse_disc(string data)
+        {
+            return data + " just disconnected!";
+        }
+
         public void run() 
         {
             try
@@ -66,6 +76,31 @@ namespace client
                         parent.streamerOutput = null;
                         parent.Close();
                         MessageBox.Show("Live stream is currently offline, please refresh your streamer list!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (parsed_read[0].Equals("JOIN") && parsed_read.Length == 2)
+                    {
+                        if (parent.username != "debug")
+                        {
+                            parent.updateChatBox(parse_join(parsed_read[1]));
+                            parent.plusViewLab();
+                        }
+                    }
+                    else if (parsed_read[0].Equals("DISC") && parsed_read.Length == 2)
+                    {
+                        if (parent.username != "debug") 
+                        {
+                            parent.updateChatBox(parse_disc(parsed_read[1]));
+                            parent.minusViewLab();
+                        }
+                    }
+                    else if (parsed_read[0].Equals("VIEW") && parsed_read.Length == 2)
+                    {
+                        if (parent.username != "debug")
+                        {
+                            parent.updateLogLab(read);
+                            parent.updateViewLab(parsed_read[1]);
+                        }
+                            //Dodacu i VIEW kao broj viewera da salje i onda je gotov taj protokol valjda
                     }
                     else
                     {

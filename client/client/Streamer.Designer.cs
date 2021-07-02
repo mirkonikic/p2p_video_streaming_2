@@ -38,6 +38,9 @@ namespace client
             this.msgBox = new System.Windows.Forms.RichTextBox();
             this.tbChat = new System.Windows.Forms.TextBox();
             this.btChat = new System.Windows.Forms.Button();
+            this.btScreenShot = new System.Windows.Forms.Button();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbVideo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,18 +77,18 @@ namespace client
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 725);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 20);
+            this.label1.Size = new System.Drawing.Size(49, 15);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Viewers:";
+            this.label1.Text = "viewers:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(14, 757);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 20);
+            this.label2.Size = new System.Drawing.Size(27, 15);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Log:";
+            this.label2.Text = "log:";
             // 
             // viewLab
             // 
@@ -133,11 +136,43 @@ namespace client
             this.btChat.UseVisualStyleBackColor = true;
             this.btChat.Click += new System.EventHandler(this.btChat_Click);
             // 
+            // btScreenShot
+            // 
+            this.btScreenShot.Location = new System.Drawing.Point(573, 568);
+            this.btScreenShot.Name = "btScreenShot";
+            this.btScreenShot.Size = new System.Drawing.Size(84, 24);
+            this.btScreenShot.TabIndex = 9;
+            this.btScreenShot.Text = "screenshot";
+            this.btScreenShot.UseVisualStyleBackColor = true;
+            this.btScreenShot.Click += new System.EventHandler(this.btScreenShot_Click);
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Location = new System.Drawing.Point(674, 570);
+            this.hScrollBar1.Maximum = 30;
+            this.hScrollBar1.Minimum = -30;
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(198, 18);
+            this.hScrollBar1.TabIndex = 10;
+            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(878, 573);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 15);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "brightness:";
+            // 
             // Streamer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1103, 793);
+            this.ClientSize = new System.Drawing.Size(965, 596);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.hScrollBar1);
+            this.Controls.Add(this.btScreenShot);
             this.Controls.Add(this.btChat);
             this.Controls.Add(this.tbChat);
             this.Controls.Add(this.msgBox);
@@ -169,5 +204,8 @@ namespace client
         private System.Windows.Forms.RichTextBox msgBox;
         private System.Windows.Forms.TextBox tbChat;
         private System.Windows.Forms.Button btChat;
+        private System.Windows.Forms.Button btScreenShot;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.Label label3;
     }
 }

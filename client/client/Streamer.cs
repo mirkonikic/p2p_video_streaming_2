@@ -113,8 +113,7 @@ namespace client
                 client_array[i] = null;
             }
 
-            if(username != "debug")
-                updateLogLabel("Nulled out the client array");
+            updateLogLabel("Nulled out the client array");
         }
 
         public int returnFirstFreePlaceInArray()
@@ -153,12 +152,13 @@ namespace client
 
             updateNumberOfClients();
 
-            if(username != "debug")
-                updateViewersLabel();
+            updateViewersLabel();
 
-            if(username != "debug")
-                updateMsgBox(client.username + " just joined!");
-
+            
+            updateMsgBox(client.username + " just joined!");
+            sendToAllClientsTcp("JOIN " + client.username, client.username);    //Napisi ostalim klijentima da se prikacio nov
+            client.serverOutput.Write("VIEW " + number_of_clients);             //Napisi novom klijentu koliko postoji gledalaca na ovom strimu
+            
             //create clientThread
             ClientThread client_thread = new ClientThread(client_array[place]);
             Thread clientThread = new Thread(client_thread.Start);           //Creates Thread for -> tracker - client handler - console
@@ -193,6 +193,13 @@ namespace client
 
             //Zapocni snimanje
             capture = new VideoCapture();
+            
+            //Bez smanjivanja je 1MB velicina
+
+            //110KB velicina, ovo bi valjda moglo kroz udp, sad cu da probam
+            capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameWidth, 1280);
+            capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameHeight, 720);
+
             capture.ImageGrabbed += Cap_ImageGrabbed;
             capture.Start();
 
@@ -204,17 +211,20 @@ namespace client
             {
                 mat = new Mat();
                 capture.Retrieve(mat);
-                
-                if(username != "debug")
+
+                //RESIZE
+
+                if (username != "debug")
                     viewLab.Text = "" + number_of_clients + " " + "viewers";
 
                 if (number_of_clients != 0)
                 {
                     //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
-                    string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                    //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
+                    string data = sacuvajPosaljiSliku();
                     sendToAllClientsUdp(data);
                 }
-          
+
 
                 //Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
                 //img.Save("file.png", ImageFormat.Png);            450 Kb
@@ -222,27 +232,14 @@ namespace client
                 //BOLJA KOMPRESIJA JE PNG
 
                 Bitmap img = mat.ToImage<Bgr, byte>().AsBitmap();
-
+                //sacuvajSliku(img);
                 pbVideo.Image = img;
-
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-        }
-
-        //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
-        public string sacuvajPosaljiSliku(Bitmap bitmap)
-        {
-            
-            byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
-            //ENCODE THE BYTE AND INPUT INTO BW
-            string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
-
-            return zaSlanje_b64;
-            //return Encoding.ASCII.GetBytes(zaSlanje_b64);
         }
 
         public byte[] toByteArray(Image image, ImageFormat format)
@@ -253,6 +250,36 @@ namespace client
                 //image.Save("trebaDaPosaljem.bmp", format);
                 return ms.ToArray();
             }
+        }
+
+        //public byte[] sacuvajPosaljiSliku(Bitmap bitmap)
+        public string sacuvajPosaljiSliku()//Bitmap bitmap)
+        {
+            Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+            Bitmap bmp = image.AsBitmap();
+            byte[] zaSlanje;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bmp.Save(ms, ImageFormat.Jpeg);
+                //image.Save("trebaDaPosaljem.bmp", format);
+                zaSlanje =  ms.ToArray();
+            }
+
+            //byte[] zaSlanje = toByteArray(bitmap, ImageFormat.Bmp);
+            //ENCODE THE BYTE AND INPUT INTO BW
+            string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);
+
+            return zaSlanje_b64;
+            //return Encoding.ASCII.GetBytes(zaSlanje_b64);
+        }
+
+        private void sacuvajSliku()//Bitmap bitmap)
+        {
+            Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+
+            Bitmap bitmap = image.AsBitmap();
+            bitmap.Save("slika.png", ImageFormat.Jpeg);
         }
 
         public void sendToAllClientsUdp(string data)//byte[] data)
@@ -291,7 +318,16 @@ namespace client
 
 
         //Gotovo i uredjeno
-        public void sendToAllClientsTcp(string data)
+        public void sendToAllClientsTcp(string Data, string username)
+        {
+            for (int i = 0; i < number_of_clients; i++)
+            {
+                if(!client_array[i].username.Equals(username))
+                    client_array[i].serverOutput.Write(Data);
+            }
+        }
+
+        public void sendToAllClientsTcp(string Data)
         {
             for (int i = 0; i < number_of_clients; i++)
             {
@@ -304,17 +340,20 @@ namespace client
 
         public void updateMsgBox(string data) 
         {
-            msgBox.Text += data + "\n";
+            if(!username.Equals("debug"))
+                msgBox.Text += data + "\n";
         }
 
         public void updateLogLabel(string data) 
         {
-            logLab.Text = data;
+            if (!username.Equals("debug"))
+                logLab.Text = data;
         }
 
         public void updateViewersLabel() 
         {
-            viewLab.Text = "" + number_of_clients;
+            if (!username.Equals("debug"))
+                viewLab.Text = "" + number_of_clients;
         }
 
         public string returnClientIpAddress(TcpClient client) { return client.Client.RemoteEndPoint.ToString().Split(":")[0]; }
@@ -339,11 +378,11 @@ namespace client
             forma_parent.Show();
         }
 
-        private void sacuvajSliku(Bitmap bitmap)
+        private void btScreenShot_Click(object sender, EventArgs e)
         {
             //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
             //Bitmap bmp = image.AsBitmap();
-
+            sacuvajSliku();
             //bmp.Save("slika" + ".jpg");
         }
 
@@ -372,6 +411,12 @@ namespace client
                 updateMsgBox(username+": "+tbChat.Text);
 
             sendToAllClientsTcp(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
+            tbChat.Text = "";
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.Brightness ,hScrollBar1.Value);
         }
     }
 }

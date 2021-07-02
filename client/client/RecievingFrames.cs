@@ -38,7 +38,9 @@ namespace client
 
                     using (var ms = new MemoryStream(decodedData))
                     {
+                        //Image recv_img = Image.FromStream(ms);
                         parent.updatePictureBox(Image.FromStream(ms));
+                        parent.updateLogLab("" + decodedData.Length);
                     }
                 }
             }

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,7 +54,7 @@ namespace client
 
         private void Form4_Load(object sender, EventArgs e)
         {
-
+            updateViewLab("" + 0);
             //Ovde prvo treba da trazi od trackera da dobije ip adresu, a port je uvek 9091
             //Onda otvori TCP konekciju sa streamerom i da mu udp info, pa zapocinje recieve
             serverOutput.Write($"WTCH {streamer}");
@@ -119,6 +122,23 @@ namespace client
         public void updateLogLab(string data) 
         {
             logLab.Text = data;
+        }
+
+        public void minusViewLab() 
+        {
+            int num = (Int32.Parse(viewLab.Text) - 1);
+            viewLab.Text = "" + num;
+        }
+
+        public void plusViewLab() 
+        {
+            int num = (Int32.Parse(viewLab.Text) + 1);
+            viewLab.Text = "" + num;
+        }
+
+        public void updateViewLab(string data) 
+        {
+            viewLab.Text = data;
         }
 
         public void updateChatBox(string data) 
@@ -191,6 +211,17 @@ namespace client
             if(username != "debug")
                 updateChatBox(username + ": " + tbChat.Text);
             streamerOutput.Write(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
+            tbChat.Text = "";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            pbVideo.Image.Save(@"~\Pictures\slika2.png", ImageFormat.Jpeg);
+            //Image<Bgr, byte> image = pbVideo.Image;
+            //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+
+            //Bitmap bitmap = image.AsBitmap();
+            //bitmap.Save("slika.png", ImageFormat.Jpeg);
         }
     }
 }
