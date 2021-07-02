@@ -54,7 +54,7 @@ namespace client
 
         private void Form4_Load(object sender, EventArgs e)
         {
-
+            updateViewLab("" + 0);
             //Ovde prvo treba da trazi od trackera da dobije ip adresu, a port je uvek 9091
             //Onda otvori TCP konekciju sa streamerom i da mu udp info, pa zapocinje recieve
             serverOutput.Write($"WTCH {streamer}");
@@ -122,6 +122,23 @@ namespace client
         public void updateLogLab(string data) 
         {
             logLab.Text = data;
+        }
+
+        public void minusViewLab() 
+        {
+            int num = (Int32.Parse(viewLab.Text) - 1);
+            viewLab.Text = "" + num;
+        }
+
+        public void plusViewLab() 
+        {
+            int num = (Int32.Parse(viewLab.Text) + 1);
+            viewLab.Text = "" + num;
+        }
+
+        public void updateViewLab(string data) 
+        {
+            viewLab.Text = data;
         }
 
         public void updateChatBox(string data) 
