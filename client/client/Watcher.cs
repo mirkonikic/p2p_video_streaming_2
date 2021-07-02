@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -191,6 +194,17 @@ namespace client
             if(username != "debug")
                 updateChatBox(username + ": " + tbChat.Text);
             streamerOutput.Write(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
+            tbChat.Text = "";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            pbVideo.Image.Save(@"~\Pictures\slika2.png", ImageFormat.Jpeg);
+            //Image<Bgr, byte> image = pbVideo.Image;
+            //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
+
+            //Bitmap bitmap = image.AsBitmap();
+            //bitmap.Save("slika.png", ImageFormat.Jpeg);
         }
     }
 }

@@ -110,7 +110,7 @@ namespace client
             //Naci sad kad prosledjuje drugima moze samo da upise odmah u tekst_sa_donjim_crtama sledece
             //TEXT mirko:_kako_ste i znace se ko je poslao poruku...
             //client.parent.sendToAllClientsTcp("TEXT " + " " + parsed_line[1]);
-            client.parent.sendToAllClientsTcp(line);
+            client.parent.sendToAllClientsTcp(line, client.username);
 
             return 200;
         }

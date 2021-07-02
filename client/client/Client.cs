@@ -55,6 +55,7 @@ namespace client
             parent.updateViewersLabel();
             //apdejtujem log label da se diskonektovao
             parent.updateLogLabel(username + " disconnected!");
+            parent.sendToAllClientsTcp("DISC " + username);
         }
     }
 }
