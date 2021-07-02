@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 //U ovom threadu samo primam poruke od streamera, jer protokol za poruke nije request response nego samo salje kad dobije
 //RAZMISLI DA LI SI MOGAO OVDE DA KORISTIS BINARYREADER IZ PARENT_A
@@ -74,6 +75,7 @@ namespace client
                     {
                         parent.streamerOutput = null;
                         parent.Close();
+                        MessageBox.Show("Live stream is currently offline, please refresh your streamer list!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else if (parsed_read[0].Equals("JOIN") && parsed_read.Length == 2)
                     {

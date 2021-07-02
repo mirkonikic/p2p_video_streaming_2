@@ -44,13 +44,17 @@ namespace client
             // 
             // stopBtn
             // 
-            this.stopBtn.Location = new System.Drawing.Point(573, 544);
+            this.stopBtn.BackColor = System.Drawing.Color.Red;
+            this.stopBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stopBtn.ForeColor = System.Drawing.Color.White;
+            this.stopBtn.Location = new System.Drawing.Point(655, 725);
+            //this.stopBtn.Location = new System.Drawing.Point(573, 544);
             this.stopBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.stopBtn.Name = "stopBtn";
             this.stopBtn.Size = new System.Drawing.Size(84, 24);
             this.stopBtn.TabIndex = 1;
             this.stopBtn.Text = "stop";
-            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.UseVisualStyleBackColor = false;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
             // pbVideo
