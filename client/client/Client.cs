@@ -53,12 +53,11 @@ namespace client
             //na streamer metodi smanjujem broj watchera za jedan
             parent.updateNumberOfClients();
 
-            if(parent.username != "debug")
-                parent.updateViewersLabel();
+            parent.updateViewersLabel();
 
             //apdejtujem log label da se diskonektovao
             parent.updateLogLabel(username + " disconnected!");
-            parent.sendToAllClientsTcp("DISC " + username);
+            parent.sendToAllClientsTcp("DISC " + username, username);
         }
     }
 }
