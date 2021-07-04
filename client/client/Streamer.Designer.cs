@@ -77,7 +77,7 @@ namespace client
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(49, 15);
             this.label1.TabIndex = 2;
-            this.label1.Text = "viewers:";
+            this.label1.Text = "Viewers:";
             // 
             // label2
             // 
@@ -86,7 +86,7 @@ namespace client
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(27, 15);
             this.label2.TabIndex = 3;
-            this.label2.Text = "log:";
+            this.label2.Text = "Log:";
             // 
             // viewLab
             // 
@@ -145,7 +145,7 @@ namespace client
             // hScrollBar1
             // 
             this.hScrollBar1.LargeChange = 1;
-            this.hScrollBar1.Location = new System.Drawing.Point(674, 573);
+            this.hScrollBar1.Location = new System.Drawing.Point(770, 766);
             this.hScrollBar1.Maximum = 10;
             this.hScrollBar1.Minimum = 1;
             this.hScrollBar1.Name = "hScrollBar1";
@@ -159,7 +159,7 @@ namespace client
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(878, 573);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(78, 15);
+            this.label3.Size = new System.Drawing.Size(96, 20);
             this.label3.TabIndex = 11;
             this.label3.Text = ":compression";
             // 

@@ -73,6 +73,7 @@ namespace client
                     }
                     else if (parsed_read[0].Equals("STOP"))
                     {
+
                         parent.streamerOutput = null;
                         parent.Close();
                         MessageBox.Show("Live stream is currently offline, please refresh your streamer list!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);

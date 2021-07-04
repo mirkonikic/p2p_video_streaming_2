@@ -124,6 +124,7 @@ namespace client
 
         public void updateLogLab(string data) 
         {
+
             if (!username.Equals("debug"))
                 logLab.Text = data;
         }
@@ -168,7 +169,6 @@ namespace client
         {
             if (!username.Equals("debug"))
                 chatBox.Text += data + "\n";
-
         }
 
         public void stopBtn_Click(object sender, EventArgs e)
@@ -194,7 +194,7 @@ namespace client
             isRunning = false;
 
             serverOutput.Write("STOP");
-            string status = serverInput.ReadString();
+            string status = serverInput.ReadString(); 
 
             //POSALJI TCPCLIENTU DA GASIS STRIM
             if(streamerOutput != null)
