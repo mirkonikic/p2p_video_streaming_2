@@ -45,20 +45,20 @@ namespace client
             // pbVideo
             // 
             this.pbVideo.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.pbVideo.Location = new System.Drawing.Point(13, 11);
+            this.pbVideo.Location = new System.Drawing.Point(14, 13);
             this.pbVideo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pbVideo.Name = "pbVideo";
-            this.pbVideo.Size = new System.Drawing.Size(737, 701);
+            this.pbVideo.Size = new System.Drawing.Size(737, 698);
             this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbVideo.TabIndex = 2;
             this.pbVideo.TabStop = false;
             // 
             // chatBox
             // 
-            this.chatBox.Location = new System.Drawing.Point(770, 11);
+            this.chatBox.Location = new System.Drawing.Point(770, 13);
             this.chatBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chatBox.Name = "chatBox";
-            this.chatBox.Size = new System.Drawing.Size(318, 700);
+            this.chatBox.Size = new System.Drawing.Size(318, 698);
             this.chatBox.TabIndex = 3;
             this.chatBox.Text = "";
             // 
@@ -72,7 +72,7 @@ namespace client
             // 
             // btChat
             // 
-            this.btChat.Location = new System.Drawing.Point(1003, 725);
+            this.btChat.Location = new System.Drawing.Point(1002, 723);
             this.btChat.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btChat.Name = "btChat";
             this.btChat.Size = new System.Drawing.Size(86, 31);
@@ -100,9 +100,9 @@ namespace client
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(484, 544);
+            this.button1.Location = new System.Drawing.Point(656, 758);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 32);
+            this.button1.Size = new System.Drawing.Size(95, 28);
             this.button1.TabIndex = 8;
             this.button1.Text = "screenshot";
             this.button1.UseVisualStyleBackColor = true;
@@ -127,9 +127,9 @@ namespace client
             // 
             // stopBtn
             // 
-            this.stopBtn.Location = new System.Drawing.Point(573, 544);
+            this.stopBtn.Location = new System.Drawing.Point(656, 721);
             this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(83, 23);
+            this.stopBtn.Size = new System.Drawing.Size(95, 31);
             this.stopBtn.TabIndex = 11;
             this.stopBtn.Text = "stop";
             this.stopBtn.UseVisualStyleBackColor = true;
@@ -140,7 +140,7 @@ namespace client
             this.AccessibleName = "tbData";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 595);
+            this.ClientSize = new System.Drawing.Size(1102, 794);
             this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.viewLab);
             this.Controls.Add(this.label3);

@@ -23,6 +23,8 @@ namespace tracker
         //Trackerova Ip adresa
         public string tracker_ip = "127.0.0.1";
 
+        public static readonly object obj = new object();
+
         public Tracker(TcpListener main_listener)
         {
             this.main_listener = main_listener;

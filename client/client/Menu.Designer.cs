@@ -39,10 +39,9 @@ namespace client
             // 
             // startStreamBtn
             // 
-            this.startStreamBtn.Location = new System.Drawing.Point(558, 124);
-            this.startStreamBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.startStreamBtn.Location = new System.Drawing.Point(638, 165);
             this.startStreamBtn.Name = "startStreamBtn";
-            this.startStreamBtn.Size = new System.Drawing.Size(190, 95);
+            this.startStreamBtn.Size = new System.Drawing.Size(217, 127);
             this.startStreamBtn.TabIndex = 0;
             this.startStreamBtn.Text = "START STREAMING";
             this.startStreamBtn.UseVisualStyleBackColor = true;
@@ -51,27 +50,25 @@ namespace client
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(558, 53);
+            this.label1.Location = new System.Drawing.Point(638, 71);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(169, 15);
+            this.label1.Size = new System.Drawing.Size(210, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "Enter max number of watchers";
             // 
             // tbMaxWatchers
             // 
-            this.tbMaxWatchers.Location = new System.Drawing.Point(558, 77);
-            this.tbMaxWatchers.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMaxWatchers.Location = new System.Drawing.Point(638, 103);
             this.tbMaxWatchers.Name = "tbMaxWatchers";
-            this.tbMaxWatchers.Size = new System.Drawing.Size(190, 23);
+            this.tbMaxWatchers.Size = new System.Drawing.Size(217, 27);
             this.tbMaxWatchers.TabIndex = 2;
             // 
             // refreshBtn
             // 
             this.refreshBtn.Image = ((System.Drawing.Image)(resources.GetObject("refreshBtn.Image")));
-            this.refreshBtn.Location = new System.Drawing.Point(558, 9);
-            this.refreshBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.refreshBtn.Location = new System.Drawing.Point(638, 12);
             this.refreshBtn.Name = "refreshBtn";
-            this.refreshBtn.Size = new System.Drawing.Size(35, 28);
+            this.refreshBtn.Size = new System.Drawing.Size(40, 37);
             this.refreshBtn.TabIndex = 3;
             this.refreshBtn.UseVisualStyleBackColor = true;
             this.refreshBtn.Click += new System.EventHandler(this.refreshBtn_Click);
@@ -79,24 +76,23 @@ namespace client
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(598, 16);
+            this.label2.Location = new System.Drawing.Point(683, 21);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(113, 15);
+            this.label2.Size = new System.Drawing.Size(143, 20);
             this.label2.TabIndex = 4;
             this.label2.Text = "Refresh streamer list";
             // 
             // Menu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(769, 348);
+            this.ClientSize = new System.Drawing.Size(879, 464);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.refreshBtn);
             this.Controls.Add(this.tbMaxWatchers);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.startStreamBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Menu";
             this.Text = "P2P Video Streaming";
             this.Load += new System.EventHandler(this.Form2_Load);

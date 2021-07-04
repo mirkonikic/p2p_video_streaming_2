@@ -121,30 +121,40 @@ namespace client
 
         public void updateLogLab(string data) 
         {
-            logLab.Text = data;
+            if (username != "debug")
+                logLab.Text = data;
         }
 
         public void minusViewLab() 
         {
-            int num = (Int32.Parse(viewLab.Text) - 1);
-            viewLab.Text = "" + num;
+            if (username != "debug")
+            {
+                int num = (Int32.Parse(viewLab.Text) - 1);
+                viewLab.Text = "" + num;
+            }
+
         }
 
         public void plusViewLab() 
         {
-            int num = (Int32.Parse(viewLab.Text) + 1);
-            viewLab.Text = "" + num;
+            if (username != "debug")
+            {
+                int num = (Int32.Parse(viewLab.Text) + 1);
+                viewLab.Text = "" + num;
+            }
+
         }
 
         public void updateViewLab(string data) 
         {
-            viewLab.Text = data;
+            if (username != "debug")
+                viewLab.Text = data;
         }
 
         public void updateChatBox(string data) 
         {
-            chatBox.Text += data + "\n";
-
+            if (username != "debug")
+                chatBox.Text += data + "\n";
         }
 
         public void stopBtn_Click(object sender, EventArgs e)
@@ -170,7 +180,7 @@ namespace client
             isRunning = false;
 
             serverOutput.Write("STOP");
-            string status = serverInput.ReadString();
+            string status = serverInput.ReadString(); 
 
             //POSALJI TCPCLIENTU DA GASIS STRIM
             if(streamerOutput != null)

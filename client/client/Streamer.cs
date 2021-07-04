@@ -221,7 +221,6 @@ namespace client
                 if (username != "debug")
                     viewLab.Text = "" + number_of_clients + " " + "viewers";
 
-                
                 //byte[] data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
                 //string data = sacuvajPosaljiSliku(mat.ToImage<Bgr, byte>().AsBitmap());
 
@@ -347,29 +346,30 @@ namespace client
 
         public void sendToAllClientsUdp(string data)//byte[] data)
         {
-            
-            for (int i = 0; i < number_of_clients; i++)
+            //Poslednja verzija algoritma valjda
+            int i = 0;  //ovaj broji koliko je ne null klijenata presao
+            int j = 0;  //ovaj broji koliko klijenata ima
+            //Sve dok nisam presao sve ne null klijente iz niza
+            while (i < number_of_clients)
             {
-                if (client_array[i] != null)
+                if (j > max_clients)    //ako sam sa j presao vise nego sto array podrzava klijenata, break;
                 {
-                    client_array[i].videoOutput.Write(data);
+                    MessageBox.Show($"{i} je i {number_of_clients} je nm {client_array[i]?.username} sam nasao");
+                    updateNumberOfClients();
+                    i = number_of_clients;
                 }
+
+                //proveri dal nije null, ako nije:
+                if (client_array[j] != null)
+                {
+                    //Posalji mu frejm
+                    client_array[j].videoOutput.Write(data);
+                    //Upisi da si pronasao jos jednog
+                    i++;
+                }
+
+                j++;
             }
-
-            /*
-            for (int i = 0; i < number_of_clients; i++)
-            {
-                if (client_array[i] == null)
-                {
-                    client_array[i] = client_array[i + 1];
-                    i--;
-                    continue;
-                }
-                client_array[i].videoOutput.Write(data);
-            }*/
-
-            //videoOutput.Write(data);
-            //videoStream = null;
         }
 
 
@@ -396,40 +396,53 @@ namespace client
         //Gotovo i uredjeno
         public void sendToAllClientsTcp(string Data, string username)
         {
-            for (int i = 0; i < number_of_clients; i++)
+            int i = 0;  //ovaj broji koliko je ne null klijenata presao
+            int j = 0;  //ovaj broji koliko klijenata ima
+            //Sve dok nisam presao sve ne null klijente iz niza
+            while (i < number_of_clients)
             {
-                if (client_array[i] != null && !client_array[i].username.Equals(username))
+                if (j > max_clients)    //ako sam sa j presao vise nego sto array podrzava klijenata, break;
                 {
-                    client_array[i].serverOutput.Write(Data);
-                }
-            }
-            /*for (int i = 0; i < number_of_clients; i++)
-            {
-                if (client_array[i] == null)
-                {
-                    client_array[i] = client_array[i + 1];
-                    i--;
-                    continue;
+                    MessageBox.Show($"{i} je i {number_of_clients} je nm {client_array[i]?.username} sam nasao");
+                    updateNumberOfClients();
+                    i = number_of_clients;
                 }
 
-                if (!client_array[i].username.Equals(username))
-                    client_array[i].serverOutput.Write(Data);
-            }*/
+                //proveri dal nije null, ako nije:
+                if (client_array[j] != null)
+                {
+                    //Posalji mu data ako se ne zove isto kao username, ali povecaj i jer si nasao ne null klijenta
+                    if (!client_array[j].username.Equals(username))
+                        client_array[j].serverOutput.Write(Data);
+                    //Upisi da si pronasao jos jednog
+                    i++;
+                }
+
+                j++;
+            }
         }
 
         public void sendToAllClientsTcp(string Data)
         {
-            /*
-            for (int i = 0; i < number_of_clients; i++)
+            int i = 0;
+            //Sve dok nisam presao sve ne null klijente iz niza
+            while (i < number_of_clients)
             {
-                if (client_array[i] == null)
+                //proveri dal nije null, ako nije:
+                if (client_array[i] != null)
                 {
-                    client_array[i] = client_array[i + 1];
-                    i--;
-                    continue;
+                    //Posalji mu data, nebitno dal je username ili ne
+                    client_array[i].serverOutput.Write(Data);
+                    //Upisi da si pronasao jos jednog
+                    i++;
                 }
-                client_array[i].serverOutput.Write(Data);
-            }*/
+
+                if (i > max_clients)
+                {
+                    updateNumberOfClients();
+                    i = number_of_clients;
+                }
+            }
         }
 
         public void updateMsgBox(string data) 

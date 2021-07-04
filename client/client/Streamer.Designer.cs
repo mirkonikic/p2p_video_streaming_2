@@ -52,7 +52,7 @@ namespace client
             this.pbVideo.Location = new System.Drawing.Point(14, 16);
             this.pbVideo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pbVideo.Name = "pbVideo";
-            this.pbVideo.Size = new System.Drawing.Size(737, 701);
+            this.pbVideo.Size = new System.Drawing.Size(737, 700);
             this.pbVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbVideo.TabIndex = 0;
             this.pbVideo.TabStop = false;
@@ -77,18 +77,18 @@ namespace client
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 725);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 20);
+            this.label1.Size = new System.Drawing.Size(63, 20);
             this.label1.TabIndex = 2;
-            this.label1.Text = "viewers:";
+            this.label1.Text = "Viewers:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(14, 757);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 20);
+            this.label2.Size = new System.Drawing.Size(37, 20);
             this.label2.TabIndex = 3;
-            this.label2.Text = "log:";
+            this.label2.Text = "Log:";
             // 
             // viewLab
             // 
@@ -149,7 +149,7 @@ namespace client
             // hScrollBar1
             // 
             this.hScrollBar1.LargeChange = 1;
-            this.hScrollBar1.Location = new System.Drawing.Point(674, 573);
+            this.hScrollBar1.Location = new System.Drawing.Point(770, 766);
             this.hScrollBar1.Maximum = 10;
             this.hScrollBar1.Minimum = 1;
             this.hScrollBar1.Name = "hScrollBar1";
@@ -161,9 +161,9 @@ namespace client
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1003, 764);
+            this.label3.Location = new System.Drawing.Point(995, 764);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(78, 15);
+            this.label3.Size = new System.Drawing.Size(96, 20);
             this.label3.TabIndex = 11;
             this.label3.Text = ":compression";
             // 
@@ -171,7 +171,7 @@ namespace client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(966, 604);
+            this.ClientSize = new System.Drawing.Size(1103, 803);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.btScreenShot);

@@ -476,56 +476,60 @@ namespace tracker
             vprint(line, client.name);
             if (parsed_line.Length > 1) { return 400; }
 
-            //PROVERI DAL VEC STRIMUJE ILI WATCHUJE
-            if (client.role.Equals("x")) { return 407; } //cant stop
+            lock (Tracker.obj)
+            {   //PROVERI DAL VEC STRIMUJE ILI WATCHUJE
+                if (client.role.Equals("x")) { return 407; } //cant stop
 
-            //PROVERI FILESYSTEM i DATABAZU
-            if (!checkFilesystem()) { return 500; }
-            if (!checkDb("user.dat")) { return 500; }
+                //PROVERI FILESYSTEM i DATABAZU
+                if (!checkFilesystem()) { return 500; }
+                if (!checkDb("user.dat")) { return 500; }
 
-            //UPISI U USER>DAT S
-            modifyDb(0, client.name, 3, "x", "user.dat");
-            vprint("Trebalo bi da sam modifikovao da ne budem s/w", client.name);
 
-            if (client.role.Equals("w"))
-            {
-                //PRONADJI KOG STREAMERA GLEDA
-                //1_IDEJA PRODJI KROZ SVAKOG USERNAME.DAT I NADJI WATCHERA
-                //2_IDEJA CUVAJ U PROMENLJIVU IME KOGA GLEDA
-                //3_IDEJA NAPRAVI WATCHER.DAT I TU SE CUVA KO KOGA GLEDA
-                //4_IDEJA 
-                //Za sada ideja 2 je najlaksa
-                //IZBRISI IZ <>.DAT USERA
-                vprint(client.streamer_kog_gleda + " je ime username.dat");
-                deleteFromDb(0, client.name, client.streamer_kog_gleda + ".dat");
-                client.streamer_kog_gleda = null;
+                //UPISI U USER>DAT S
+                modifyDb(0, client.name, 3, "x", "user.dat");
+                vprint("Trebalo bi da sam modifikovao da ne budem s/w", client.name);
 
-                client.role = "x";
 
-                return 200;
-            }
-            else if (client.role.Equals("s"))
-            {
-                //IZBRISI IZ STRMRS.DAT USERA
-                deleteFromDb(0, client.name, "streamers.dat");
+                if (client.role.Equals("w"))
+                {
+                    //PRONADJI KOG STREAMERA GLEDA
+                    //1_IDEJA PRODJI KROZ SVAKOG USERNAME.DAT I NADJI WATCHERA
+                    //2_IDEJA CUVAJ U PROMENLJIVU IME KOGA GLEDA
+                    //3_IDEJA NAPRAVI WATCHER.DAT I TU SE CUVA KO KOGA GLEDA
+                    //4_IDEJA 
+                    //Za sada ideja 2 je najlaksa
+                    //IZBRISI IZ <>.DAT USERA
+                    vprint(client.streamer_kog_gleda + " je ime username.dat");
+                    deleteFromDb(0, client.name, client.streamer_kog_gleda + ".dat");
+                    client.streamer_kog_gleda = null;
 
-                //PODRAZUMEVAMO DA STREAMER JAVI WATCHERIMA DA GASI STREAM PA MOZEMO DA OCEKUJEMO OD NJIH STOP
-                //KOJA CE IH POJEDINACNO PREPRAVITI
-                //OBRISI <>.DAT
-                deleteDb(client.name+".dat");
-                vprint("Kreirani fajl: " + client.name + ".dat postoji? " + File.Exists(returnDbPath(client.name + ".dat")), client.name);
-                
-                //PODESI SVE WATCHERE NA X??
-                //JAVI IM BAR DA JE STREAMER PRESTAO DA STRIMUJE??
+                    client.role = "x";
 
-                client.role = "x";
+                    return 200;
+                }
+                else if (client.role.Equals("s"))
+                {
+                    //IZBRISI IZ STRMRS.DAT USERA
+                    deleteFromDb(0, client.name, "streamers.dat");
 
-                return 200;
-            }
-            else
-            {
-                vprint("Uloga klijenta: " + client.role, client.name);
-                return 407;
+                    //PODRAZUMEVAMO DA STREAMER JAVI WATCHERIMA DA GASI STREAM PA MOZEMO DA OCEKUJEMO OD NJIH STOP
+                    //KOJA CE IH POJEDINACNO PREPRAVITI
+                    //OBRISI <>.DAT
+                    deleteDb(client.name + ".dat");
+                    vprint("Kreirani fajl: " + client.name + ".dat postoji? " + File.Exists(returnDbPath(client.name + ".dat")), client.name);
+
+                    //PODESI SVE WATCHERE NA X??
+                    //JAVI IM BAR DA JE STREAMER PRESTAO DA STRIMUJE??
+
+                    client.role = "x";
+
+                    return 200;
+                }
+                else
+                {
+                    vprint("Uloga klijenta: " + client.role, client.name);
+                    return 407;
+                }
             }
         }
 

@@ -50,6 +50,7 @@ namespace client
             socket.Close();
             //i postavljam da nista vise ne pokazuje na ovaj objekat, pa ga pokupi garbage collector
             parent.client_array[place_id] = null;
+
             //na streamer metodi smanjujem broj watchera za jedan
             parent.updateNumberOfClients();
 
