@@ -32,9 +32,11 @@ namespace client
                     input = client.serverInput.ReadString();
                     createResponse(parseRequest(input));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    client.Disconnect();
+                    //client.parent.updateMsgBox(e.ToString());
+                    if(isRunning)
+                        client.Disconnect();
                     return;
                 }
             }
@@ -76,7 +78,7 @@ namespace client
                     response = "500 Internal Server Error";
                     break;
             }
-            client.serverOutput.Write(response);
+            client?.serverOutput.Write(response);
         }
 
         public string returnSentence(string[] parsed_words) 

@@ -1,4 +1,20 @@
-﻿BITNO:
+﻿+Sad se ne salju dva diskonekta od jednom
++Sad rade sendToAllTcp i Udp
+
+Zbog ovog exceptiona smo imali problem sa disconnectovanjem:
+
+System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'System.Net.Sockets.NetworkStream'.
+   at System.Net.Sockets.NetworkStream.<ThrowIfDisposed>g__ThrowObjectDisposedException|63_0()
+   at System.Net.Sockets.NetworkStream.Write(ReadOnlySpan`1 buffer)
+   at System.Net.Sockets.NetworkStream.WriteByte(Byte value)
+   at System.IO.BinaryWriter.Write(String value)
+   at client.ClientThread.createResponse(Int32 request_code) in E:\kurs\p2p\p2p_video_streaming_2\client\client\ClientThread.cs:line 81
+   at client.ClientThread.Start() in E:\kurs\p2p\p2p_video_streaming_2\client\client\ClientThread.cs:line 33
+
+
+
+BITNO:
 	
 
 	Client -> 9090 port TRACKER						//KOMANDE i KONTROLA MREZE
