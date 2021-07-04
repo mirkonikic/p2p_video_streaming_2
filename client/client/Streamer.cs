@@ -29,6 +29,8 @@ namespace client
 {
     public partial class Streamer : Form
     {
+        UInt32 SEQ_num = 1;
+
         Menu forma_parent;
         //Client Array
         public Client[] client_array;
@@ -145,6 +147,7 @@ namespace client
             
             //create client object
             client_array[place] = client;
+            client.videoSocket = new UdpClient();
             client.place_id = place;
             client.parent = this;
 
@@ -227,9 +230,10 @@ namespace client
 
                 //ODVOJI KOMPRESOVANJE SLIKE I PREBACIVANJE U BAJTOVE U RAZLICITE METODE
                 ////string data = sacuvajPosaljiSliku();
+                //Ovde cu pozvati da doda header sa SEQ brojem u paket
                 string data = enkodujSliku(slika);
                 //PROVERI DAL JE DATA VECI OD 65535B i ako jeste prikazi warning da mora da poveca kompresiju
-                if (data.Length <= 65535)
+                if (data.Length <= 65491)
                 {
                     if (number_of_clients != 0)
                         sendToAllClientsUdp(data);
@@ -288,7 +292,34 @@ namespace client
             byte[] zaSlanje;        //byte array koji ce sadrzati bajtove slike
             zaSlanje = toByteArray(img, ImageFormat.Jpeg);      //izvuce bajtove iz prosledjene slike i kompresuje jos jednom po Jpeg kompresiji
 
-            string zaSlanje_b64 = Convert.ToBase64String(zaSlanje, 0, zaSlanje.Length);     //prevede u base64
+            byte[] version = new byte[4];
+            byte[] seq_num = new byte[4];
+            byte[] frame_divisor = new byte[4];
+            byte[] data_length = new byte[4];
+
+            byte[] zaSlanjeSaHeaderima = new byte[16 + zaSlanje.Length];
+
+            version = BitConverter.GetBytes(1);
+            seq_num = BitConverter.GetBytes(SEQ_num);
+            frame_divisor = BitConverter.GetBytes(24);
+            data_length = BitConverter.GetBytes(zaSlanje.Length);
+
+            //MessageBox.Show($"{zaSlanje.Length} a {zaSlanje.Length+seq_num.Length+version.Length+frame_divisor.Length+data_length.Length}");
+
+            Array.Copy(version, 0, zaSlanjeSaHeaderima, 0, 4);
+            Array.Copy(seq_num, 0, zaSlanjeSaHeaderima, 4, 4);
+            Array.Copy(frame_divisor, 0, zaSlanjeSaHeaderima, 8, 4);
+            Array.Copy(data_length, 0, zaSlanjeSaHeaderima, 12, 4);
+            Array.Copy(zaSlanje, 0, zaSlanjeSaHeaderima, 16, zaSlanje.Length);
+
+            string zaSlanje_b64 = Convert.ToBase64String(zaSlanjeSaHeaderima, 0, zaSlanjeSaHeaderima.Length);     //prevede u base64
+
+            //Resetujem da se ne desi overflow
+            if (SEQ_num + 1000 > UInt32.MaxValue)
+                SEQ_num = 1;
+            else
+                SEQ_num++;
+            
 
             return zaSlanje_b64;
         }
@@ -345,11 +376,13 @@ namespace client
             bitmap.Save("slika.png", ImageFormat.Jpeg);
         }
 
+        //Prebacio u UDP
         public void sendToAllClientsUdp(string data)//byte[] data)
         {
             //Poslednja verzija algoritma valjda
             int i = 0;  //ovaj broji koliko je ne null klijenata presao
             int j = 0;  //ovaj broji koliko klijenata ima
+            byte[] data_bytes = Encoding.ASCII.GetBytes(data);
             //Sve dok nisam presao sve ne null klijente iz niza
             while (i < number_of_clients)
             {
@@ -364,7 +397,10 @@ namespace client
                 if (client_array[j] != null)
                 {
                     //Posalji mu frejm
-                    client_array[j].videoOutput.Write(data);
+                    //client_array[j].videoOutput.Write(data);
+                    client_array[j].videoSocket.Send(data_bytes, data_bytes.Length, client_array[j].ip_addr, client_array[j].port);
+
+
                     //Upisi da si pronasao jos jednog
                     i++;
                 }

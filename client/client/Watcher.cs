@@ -32,9 +32,11 @@ namespace client
         //BinaryReader streamerInput;
         public BinaryWriter streamerOutput;
 
-        TcpListener videoListener;
-        NetworkStream videoStream;
-        BinaryReader videoInput;
+        UdpClient videoListener;
+        IPEndPoint RemoteIpEndPoint;
+        //TcpListener videoListener;
+        //NetworkStream videoStream;
+        //BinaryReader videoInput;
 
         public bool isRunning = true;
 
@@ -78,24 +80,25 @@ namespace client
             //Ne treba binary reader ovde jer imam onaj drugi thread za primanje poruka
             streamerOutput = new BinaryWriter(streamerStream);
 
-            
-            videoListener = new TcpListener(IPAddress.Any, 0);
 
-            videoListener.Start();
+            //videoListener = new TcpListener(IPAddress.Any, 0);
+            videoListener = new UdpClient(0);
+
+            //videoListener.Start();
             TcpClient videoStreamer;
 
             //updateChatBox("START mirko 127.0.0.1 " + tcpClient.Client.RemoteEndPoint.ToString().Split(":")[1]);
-            streamerOutput.Write("START " + username + " " + tcpClient.Client.LocalEndPoint.ToString().Split(":")[0] + " " + ((IPEndPoint)videoListener.LocalEndpoint).Port);
+            streamerOutput.Write("START " + username + " " + tcpClient.Client.LocalEndPoint.ToString().Split(":")[0] + " " + videoListener.Client.LocalEndPoint.ToString().Split(":")[1]);
 
             //Zapocinjem thread odvojen za TCP - TEXT primanje od servera
             WatcherConnections wc = new WatcherConnections(this);
             Thread tsc = new Thread(wc.run);
             tsc.Start();
 
-            //Inicijalizuje socket
-            videoStreamer = videoListener.AcceptTcpClient();
-            videoStream = videoStreamer.GetStream();
-            videoInput = new BinaryReader(videoStream);
+            //Inicijalizuje socket - Sad mi ne treba video streamer socket jer nema konekcije nego samo primam pakete
+            //videoStreamer = videoListener.AcceptTcpClient();
+            //videoStream = videoStreamer.GetStream();
+            //videoInput = new BinaryReader(videoStream);
 
             //Cuva samo jednu sliku
             /*KOmentarisem da ako pogresim mozemo da vratimo
@@ -109,7 +112,7 @@ namespace client
 
             //Ovo mozda u drugi thread
             //Jer gusi ovu nit
-            RecievingFrames rf = new RecievingFrames(this, videoInput);
+            RecievingFrames rf = new RecievingFrames(this, videoListener);
             Thread pf = new Thread(rf.run); //pf - prijem frejmova
             pf.Start();
         }
@@ -121,29 +124,50 @@ namespace client
 
         public void updateLogLab(string data) 
         {
-            logLab.Text = data;
+            if (!username.Equals("debug"))
+                logLab.Text = data;
+        }
+
+        public void updateSeqLab(string data)
+        {
+            if (!username.Equals("debug"))
+                seqLab.Text = data;
+        }
+
+        public void updatePayLenLab(string data)
+        {
+            if (!username.Equals("debug"))
+                payLenLab.Text = data;
         }
 
         public void minusViewLab() 
         {
-            int num = (Int32.Parse(viewLab.Text) - 1);
-            viewLab.Text = "" + num;
+            if (!username.Equals("debug"))
+            {
+                int num = (Int32.Parse(viewLab.Text) - 1);
+                viewLab.Text = "" + num;
+            }
         }
 
         public void plusViewLab() 
         {
-            int num = (Int32.Parse(viewLab.Text) + 1);
-            viewLab.Text = "" + num;
+            if (!username.Equals("debug"))
+            {
+                int num = (Int32.Parse(viewLab.Text) + 1);
+                viewLab.Text = "" + num;
+            }
         }
 
         public void updateViewLab(string data) 
         {
-            viewLab.Text = data;
+            if (!username.Equals("debug"))
+                viewLab.Text = data;
         }
 
         public void updateChatBox(string data) 
         {
-            chatBox.Text += data + "\n";
+            if (!username.Equals("debug"))
+                chatBox.Text += data + "\n";
 
         }
 
@@ -181,7 +205,7 @@ namespace client
 
             tcpClient.Close();
 
-            videoListener.Stop();
+            videoListener.Close();
 
             forma_parent.Show();
         }
