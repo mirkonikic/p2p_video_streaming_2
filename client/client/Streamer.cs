@@ -97,12 +97,12 @@ namespace client
             get { return max_clients; }
         }
 
-        public void updateNumberOfClients() 
+        public void updateNumberOfClients()
         {
             int nm = 0;
             for (int i = 0; i < max_clients; i++)
             {
-                if (client_array[i] != null) 
+                if (client_array[i] != null)
                 {
                     nm++;
                 }
@@ -144,7 +144,7 @@ namespace client
                 client.socket.Close();
                 return;
             }
-            
+
             //create client object
             client_array[place] = client;
             client.videoSocket = new UdpClient();
@@ -152,18 +152,18 @@ namespace client
             client.parent = this;
 
             //Upise u log label da je dosao novi vjuer
-            if(username != "debug")
+            if (username != "debug")
                 logLab.Text = client.username + " just joined!";
 
             updateNumberOfClients();
 
             updateViewersLabel();
 
-            
+
             updateMsgBox(client.username + " just joined!");
             sendToAllClientsTcp("JOIN " + client.username, client.username);    //Napisi ostalim klijentima da se prikacio nov
             client.serverOutput.Write("VIEW " + number_of_clients);             //Napisi novom klijentu koliko postoji gledalaca na ovom strimu
-            
+
             //create clientThread
             ClientThread client_thread = new ClientThread(client_array[place]);
             Thread clientThread = new Thread(client_thread.Start);           //Creates Thread for -> tracker - client handler - console
@@ -173,16 +173,16 @@ namespace client
             client_array[place].client_thread = client_thread;
         }
 
-       
+
         private void Form3_Load(object sender, EventArgs e)
         {
             //Streamer treba da:
-                //THREAD - Prihvata TCP konekcije od klijenata
-                    //While petlja koja .accept klijenta i ubaci ga u array klijenata u ovoj klasi
-                    //Lista klijenata ima i UDP port i IP adresu na koju salje i ime
-                //OVDE - Prikuplja Frejmove sa kamere i pakuje ih u pakete
-                    //Cap_ImageGrabbed to radi sa eventima, cim prikupi frejm salje svim iz niza preko multicasta
-            
+            //THREAD - Prihvata TCP konekcije od klijenata
+            //While petlja koja .accept klijenta i ubaci ga u array klijenata u ovoj klasi
+            //Lista klijenata ima i UDP port i IP adresu na koju salje i ime
+            //OVDE - Prikuplja Frejmove sa kamere i pakuje ih u pakete
+            //Cap_ImageGrabbed to radi sa eventima, cim prikupi frejm salje svim iz niza preko multicasta
+
             //Ovde otvori nov thread koji prisluskuje i prikuplja klijente, pa ih pita na koj port da im salje
             Title();
 
@@ -198,7 +198,7 @@ namespace client
 
             //Zapocni snimanje
             capture = new VideoCapture();
-            
+
             //Bez smanjivanja je 1MB velicina
 
             //110KB velicina, ovo bi valjda moglo kroz udp, sad cu da probam
@@ -271,7 +271,7 @@ namespace client
         }
 
         //Prvi deo koda iz SacuvajPosaljiSliku metode
-        public Image vratiKompresovanuSliku() 
+        public Image vratiKompresovanuSliku()
         {
             Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
             Bitmap bmp = image.AsBitmap();
@@ -286,7 +286,7 @@ namespace client
             return slika_posle_2_kompresije;
         }
 
-        public string enkodujSliku(Image img) 
+        public string enkodujSliku(Image img)
         {
             byte[] zaSlanje;        //byte array koji ce sadrzati bajtove slike
             zaSlanje = toByteArray(img, ImageFormat.Jpeg);      //izvuce bajtove iz prosledjene slike i kompresuje jos jednom po Jpeg kompresiji
@@ -318,7 +318,7 @@ namespace client
                 SEQ_num = 1;
             else
                 SEQ_num++;
-            
+
 
             return zaSlanje_b64;
         }
@@ -407,59 +407,6 @@ namespace client
 
                 j++;
             }
-            
-            /*
-            //Ima neki broj klijenata sada -> number_of_clients
-            //Ostali su null
-            //sa i brojim broj klijenata koje sam posetio koji nisu null
-            //ako broj i predje max_clients broj onda gasim while i updateujem nuber of clients
-
-            int i = 0;
-            //Sve dok nisam presao sve ne null klijente iz niza
-            while (i<number_of_clients) 
-            {
-                //proveri dal nije null, ako nije:
-                if (client_array[i] != null) 
-                {
-                    //Posalji mu frejm
-                    client_array[i].videoOutput.Write(data);
-                    //Upisi da si pronasao jos jednog
-                    i++;
-                }
-
-                if (i > max_clients)
-                {
-                    MessageBox.Show($"{i} je i {number_of_clients} je nm {client_array[0]?.username} {client_array[1]?.username} {client_array[2]?.username}");
-                    updateNumberOfClients();
-                    i = number_of_clients;
-                }
-            }
-            */
-
-            /*
-            for (int i = 0; i < number_of_clients; i++)
-            {
-                if (j > max_clients)    //ako sam sa j presao vise nego sto array podrzava klijenata, break;
-                {
-                    MessageBox.Show($"{i} je i {number_of_clients} je nm {client_array[i]?.username} sam nasao");
-                    updateNumberOfClients();
-                    i = number_of_clients;
-                }
-            }
-            */
-
-
-                //proveri dal nije null, ako nije:
-                if (client_array[j] != null)
-                {
-                    //Posalji mu frejm
-                    client_array[j].videoOutput.Write(data);
-                    //Upisi da si pronasao jos jednog
-                    i++;
-                }
-
-                j++;
-            }
         }
 
 
@@ -470,7 +417,7 @@ namespace client
         //Treba da posalje svima 'TEXT <text....>' komandu
         //Onda svi dobiju poruku od streamera
 
-        
+
 
 
 
@@ -502,34 +449,6 @@ namespace client
                 if (client_array[j] != null)
                 {
                     //Posalji mu data ako se ne zove isto kao username, ali povecaj i jer si nasao ne null klijenta
-                    if(!client_array[j].username.Equals(username))
-                        client_array[j].serverOutput.Write(Data);
-                    //Upisi da si pronasao jos jednog
-                    i++;
-                }
-
-                j++;
-            }
-
-            /*
-            for (int i = 0; i < number_of_clients; i++)
-
-            {
-                if (j > max_clients)    //ako sam sa j presao vise nego sto array podrzava klijenata, break;
-                {
-                    MessageBox.Show($"{i} je i {number_of_clients} je nm {client_array[i]?.username} sam nasao");
-                    updateNumberOfClients();
-                    i = number_of_clients;
-                }
-            }
-            */
-
-            /*for (int i = 0; i < number_of_clients; i++)
-            {
-                if (client_array[i] == null)
-
-                {
-                    //Posalji mu data ako se ne zove isto kao username, ali povecaj i jer si nasao ne null klijenta
                     if (!client_array[j].username.Equals(username))
                         client_array[j].serverOutput.Write(Data);
                     //Upisi da si pronasao jos jednog
@@ -545,26 +464,6 @@ namespace client
             int i = 0;
             //Sve dok nisam presao sve ne null klijente iz niza
             while (i < number_of_clients)
-            {
-                //proveri dal nije null, ako nije:
-                if (client_array[i] != null)
-                {
-                    //Posalji mu data, nebitno dal je username ili ne
-                    client_array[i].serverOutput.Write(Data);
-                    //Upisi da si pronasao jos jednog
-                    i++;
-                }
-
-                if (i > max_clients)
-                {
-                    updateNumberOfClients();
-                    i = number_of_clients;
-                }
-            }
-
-            /*
-            for (int i = 0; i < number_of_clients; i++)
-
             {
                 //proveri dal nije null, ako nije:
                 if (client_array[i] != null)
@@ -631,14 +530,14 @@ namespace client
             //bmp.Save("slika" + ".jpg");
         }
 
-        public string convertSpacesToUnderlines(string protocol, string data) 
+        public string convertSpacesToUnderlines(string protocol, string data)
         {
             string prep_data = null;
             string[] split_data = data.Split(null);
 
-            for (int i = 0; i<split_data.Length; i++) 
+            for (int i = 0; i < split_data.Length; i++)
             {
-                if (i == (split_data.Length-1))
+                if (i == (split_data.Length - 1))
                 {
                     prep_data += split_data[i];
                     break;
@@ -652,8 +551,8 @@ namespace client
 
         private void btChat_Click(object sender, EventArgs e)
         {
-            if(username != "debug")
-                updateMsgBox(username+": "+tbChat.Text);
+            if (username != "debug")
+                updateMsgBox(username + ": " + tbChat.Text);
 
             sendToAllClientsTcp(convertSpacesToUnderlines("TEXT", username + ": " + tbChat.Text));
             tbChat.Text = "";

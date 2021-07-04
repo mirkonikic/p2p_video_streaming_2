@@ -75,7 +75,7 @@ namespace client
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 544);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 15);
+            this.label1.Size = new System.Drawing.Size(50, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "Viewers:";
             // 
@@ -84,7 +84,7 @@ namespace client
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 568);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(27, 15);
+            this.label2.Size = new System.Drawing.Size(30, 15);
             this.label2.TabIndex = 3;
             this.label2.Text = "Log:";
             // 
@@ -145,7 +145,7 @@ namespace client
             // hScrollBar1
             // 
             this.hScrollBar1.LargeChange = 1;
-            this.hScrollBar1.Location = new System.Drawing.Point(770, 766);
+            this.hScrollBar1.Location = new System.Drawing.Point(674, 574);
             this.hScrollBar1.Maximum = 10;
             this.hScrollBar1.Minimum = 1;
             this.hScrollBar1.Name = "hScrollBar1";
@@ -159,7 +159,7 @@ namespace client
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(878, 573);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(96, 20);
+            this.label3.Size = new System.Drawing.Size(78, 15);
             this.label3.TabIndex = 11;
             this.label3.Text = ":compression";
             // 
@@ -167,7 +167,7 @@ namespace client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 605);
+            this.ClientSize = new System.Drawing.Size(963, 601);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.btScreenShot);
