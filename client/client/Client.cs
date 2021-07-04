@@ -25,8 +25,9 @@ namespace client
         public string username { get; set; }
         public TcpClient socket { get; set; }
 
-        public TcpClient videoSocket { get; set; }
-        public Client(Streamer parent, int place_id, int port, string ip_addr, string username, TcpClient socket) 
+        public UdpClient videoSocket { get; set; }
+        //public TcpClient videoSocket { get; set; }
+        public Client(Streamer parent, int place_id, int port, string ip_addr, string username, TcpClient socket, UdpClient videoSocket) 
         {
             this.parent = parent;
             this.place_id = place_id;
@@ -34,7 +35,7 @@ namespace client
             this.ip_addr = ip_addr;
             this.username = username;
             this.socket = socket;
-            this.videoSocket = socket;
+            this.videoSocket = videoSocket;
         }
 
         public Client(TcpClient socket) 

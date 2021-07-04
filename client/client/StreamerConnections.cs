@@ -50,9 +50,10 @@ namespace client
                 if(parent.username != "debug")
                     parent.updateMsgBox(strm);
 
-                client.videoSocket = new TcpClient(client.ip_addr, client.port);
-                client.videoStr = client.videoSocket.GetStream();
-                client.videoOutput = new BinaryWriter(client.videoStr);
+                //Pise da ne treba Binary Reader i Writer za UDP
+                //client.videoSocket = new TcpClient(client.ip_addr, client.port);
+                //client.videoStr = client.videoSocket.GetStream();
+                //client.videoOutput = new BinaryWriter(client.videoStr);
 
                 parent.createClient(client);
             }
