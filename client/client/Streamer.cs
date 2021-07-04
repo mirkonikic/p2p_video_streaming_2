@@ -372,7 +372,7 @@ namespace client
             Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
 
             Bitmap bitmap = image.AsBitmap();
-            bitmap.Save("slika.png", ImageFormat.Jpeg);
+            bitmap.Save("slika_s.png", ImageFormat.Jpeg);
         }
 
         //Prebacio u UDP

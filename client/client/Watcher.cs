@@ -34,6 +34,8 @@ namespace client
 
         UdpClient videoListener;
         IPEndPoint RemoteIpEndPoint;
+
+        RecievingFrames rf;
         //TcpListener videoListener;
         //NetworkStream videoStream;
         //BinaryReader videoInput;
@@ -112,7 +114,7 @@ namespace client
 
             //Ovo mozda u drugi thread
             //Jer gusi ovu nit
-            RecievingFrames rf = new RecievingFrames(this, videoListener);
+            rf = new RecievingFrames(this, videoListener);
             Thread pf = new Thread(rf.run); //pf - prijem frejmova
             pf.Start();
         }
@@ -240,7 +242,8 @@ namespace client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            pbVideo.Image.Save(@"~\Pictures\slika2.png", ImageFormat.Jpeg);
+            rf.saveImg = true;
+            //pbVideo.Image.Save(@"slika_c.png", ImageFormat.Jpeg);
             //Image<Bgr, byte> image = pbVideo.Image;
             //Image<Bgr, Byte> image = mat?.ToImage<Bgr, Byte>();
 

@@ -19,6 +19,8 @@ namespace client
         UInt32 SEQ_number_current = UInt32.MinValue;
         UInt32 SEQ_number_old = UInt32.MinValue;
         UInt32 DataLength = UInt32.MinValue;
+
+        public bool saveImg = false;
         //BinaryReader videoInput;
 
         public RecievingFrames(Watcher parent, UdpClient videoInput)
@@ -80,6 +82,11 @@ namespace client
                         {
                             SEQ_number_old = SEQ_number_current;
                             parent.updatePictureBox(Image.FromStream(ms));
+                            if (saveImg)
+                            {
+                                Image.FromStream(ms).Save("slika_c.png");
+                                saveImg = false;
+                            }
                         }
                         
                         parent.updatePayLenLab("" + DataLength);
